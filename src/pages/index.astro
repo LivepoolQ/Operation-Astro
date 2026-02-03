@@ -1,0 +1,52 @@
+---
+const name = "Ziqian Zou";
+---
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{name}</title>
+    <meta name="description" content={`${name} personal website`} />
+    <style>
+      body {
+        margin: 0;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont,
+          "Segoe UI", Roboto, Helvetica, Arial;
+      }
+      main {
+        max-width: 880px;
+        margin: 0 auto;
+        padding: 64px 20px;
+      }
+      h1 {
+        font-size: 44px;
+        margin-bottom: 8px;
+      }
+      p {
+        line-height: 1.7;
+        opacity: 0.85;
+      }
+      footer {
+        margin-top: 64px;
+        font-size: 14px;
+        opacity: 0.6;
+      }
+    </style>
+  </head>
+
+  <body>
+    <main>
+      <h1>{name}</h1>
+
+      <p>
+        Hi, this is Ziqian Zou.👋🏼
+      </p>
+
+      <footer>
+        © {new Date().getFullYear()} {name}
+      </footer>
+    </main>
+  </body>
+</html>
