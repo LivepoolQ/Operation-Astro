@@ -1,5 +1,48 @@
 ---
 const name = "Ziqian Zou";
+
+const planets = [
+  {
+    id: "games",
+    title: "Games Planet",
+    orbit: "Night Run",
+    description: "Games in progress, finished stories, design notes, and the moments worth one more round.",
+    x: 24,
+    y: 38,
+    size: 108,
+    tone: "amber",
+  },
+  {
+    id: "travel",
+    title: "Travel Planet",
+    orbit: "Horizon Log",
+    description: "Cities, routes, photos, and small fragments from places that still glow in memory.",
+    x: 70,
+    y: 30,
+    size: 92,
+    tone: "cyan",
+  },
+  {
+    id: "projects",
+    title: "Projects Planet",
+    orbit: "Builder Track",
+    description: "Code, papers, tools, experiments, and the versions that survived careful iteration.",
+    x: 56,
+    y: 62,
+    size: 132,
+    tone: "violet",
+  },
+  {
+    id: "yy",
+    title: "YY Planet",
+    orbit: "Soft Orbit",
+    description: "A small planet for YY: photos, daily traces, anniversaries, and the happy time claimed by this dog.",
+    x: 33,
+    y: 70,
+    size: 86,
+    tone: "rose",
+  },
+];
 ---
 
 <!DOCTYPE html>
@@ -10,43 +53,744 @@ const name = "Ziqian Zou";
     <title>{name}</title>
     <meta name="description" content={`${name} personal website`} />
     <style>
+      :root {
+        color-scheme: dark;
+        --ink: #f4f7fb;
+        --muted: rgba(232, 238, 249, 0.68);
+        --quiet: rgba(232, 238, 249, 0.44);
+        --panel: rgba(8, 14, 30, 0.66);
+        --line: rgba(205, 220, 255, 0.18);
+        --shadow: rgba(0, 0, 0, 0.42);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        min-height: 100%;
+        background: #030712;
+      }
+
       body {
+        min-height: 100vh;
         margin: 0;
-        font-family: system-ui, -apple-system, BlinkMacSystemFont,
-          "Segoe UI", Roboto, Helvetica, Arial;
+        overflow-x: hidden;
+        color: var(--ink);
+        font-family:
+          Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+          "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei",
+          sans-serif;
+        background:
+          radial-gradient(circle at 50% 112%, rgba(52, 123, 184, 0.22), transparent 31rem),
+          radial-gradient(circle at 28% 14%, rgba(86, 157, 199, 0.18), transparent 22rem),
+          radial-gradient(circle at 76% 18%, rgba(213, 109, 141, 0.15), transparent 19rem),
+          linear-gradient(180deg, #030814 0%, #071225 48%, #050811 100%);
       }
-      main {
-        max-width: 880px;
-        margin: 0 auto;
-        padding: 64px 20px;
+
+      body::before,
+      body::after {
+        position: fixed;
+        inset: 0;
+        z-index: -3;
+        pointer-events: none;
+        content: "";
       }
+
+      body::before {
+        background-image:
+          radial-gradient(circle at 12% 18%, rgba(255, 255, 255, 0.92) 0 1px, transparent 1.5px),
+          radial-gradient(circle at 38% 72%, rgba(142, 203, 255, 0.7) 0 1px, transparent 1.6px),
+          radial-gradient(circle at 76% 34%, rgba(255, 238, 201, 0.82) 0 1px, transparent 1.4px),
+          radial-gradient(circle at 20% 86%, rgba(255, 255, 255, 0.52) 0 0.7px, transparent 1.2px),
+          radial-gradient(circle at 92% 64%, rgba(175, 206, 255, 0.5) 0 0.8px, transparent 1.3px),
+          radial-gradient(ellipse at 68% 24%, rgba(169, 199, 236, 0.12), transparent 18rem),
+          radial-gradient(ellipse at 21% 42%, rgba(255, 206, 145, 0.08), transparent 14rem);
+        background-position:
+          0 0,
+          30px 80px,
+          110px 40px,
+          48px 120px,
+          160px 90px,
+          0 0,
+          0 0;
+        background-size:
+          190px 190px,
+          260px 260px,
+          330px 330px,
+          120px 120px,
+          460px 460px,
+          100% 100%,
+          100% 100%;
+        opacity: 0.86;
+      }
+
+      body::after {
+        z-index: -2;
+        background:
+          linear-gradient(rgba(157, 187, 231, 0.055) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(157, 187, 231, 0.045) 1px, transparent 1px);
+        background-size: 76px 76px;
+        mask-image: radial-gradient(ellipse at 50% 66%, black 0 41%, transparent 75%);
+        opacity: 0.8;
+        transform: perspective(760px) rotateX(62deg) translateY(18vh);
+        transform-origin: center bottom;
+      }
+
+      a {
+        color: inherit;
+      }
+
+      .shell {
+        position: relative;
+        display: grid;
+        min-height: 100vh;
+        grid-template-rows: 1fr;
+        padding: 0;
+      }
+
+      .footer {
+        position: fixed;
+        right: clamp(16px, 2vw, 28px);
+        bottom: clamp(14px, 2vw, 24px);
+        left: clamp(16px, 2vw, 28px);
+        z-index: 8;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 18px;
+        color: var(--quiet);
+        font-size: 13px;
+      }
+
+      .sky {
+        position: relative;
+        display: grid;
+        min-height: 100vh;
+        place-items: center;
+        padding: 0;
+      }
+
+      .dome {
+        position: relative;
+        width: 100%;
+        min-height: 100vh;
+        overflow: hidden;
+        border-bottom: 1px solid rgba(221, 232, 255, 0.18);
+        border-radius: 0;
+        background:
+          radial-gradient(ellipse at 50% 100%, rgba(86, 170, 224, 0.19), transparent 38%),
+          radial-gradient(ellipse at 50% 48%, rgba(255, 255, 255, 0.08), transparent 58%);
+        box-shadow:
+          inset 0 -40px 90px rgba(32, 101, 157, 0.17),
+          0 36px 80px rgba(0, 0, 0, 0.24);
+      }
+
+      .dome::after {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 24%;
+        left: 0;
+        z-index: 1;
+        background:
+          radial-gradient(circle at 16% 22%, rgba(255, 255, 255, 0.82) 0 1px, transparent 1.5px),
+          radial-gradient(circle at 64% 18%, rgba(185, 215, 255, 0.74) 0 1px, transparent 1.6px),
+          radial-gradient(circle at 83% 42%, rgba(255, 230, 184, 0.66) 0 0.9px, transparent 1.5px),
+          radial-gradient(circle at 42% 54%, rgba(255, 255, 255, 0.42) 0 0.7px, transparent 1.3px),
+          radial-gradient(ellipse at 71% 27%, rgba(104, 154, 218, 0.16), transparent 12rem),
+          radial-gradient(ellipse at 27% 34%, rgba(217, 136, 162, 0.1), transparent 10rem);
+        background-position:
+          0 0,
+          70px 40px,
+          20px 100px,
+          130px 20px,
+          0 0,
+          0 0;
+        background-size:
+          150px 150px,
+          230px 230px,
+          310px 310px,
+          90px 90px,
+          100% 100%,
+          100% 100%;
+        opacity: 0.95;
+        pointer-events: none;
+        content: "";
+      }
+
+      .intro {
+        position: absolute;
+        top: clamp(34px, 8vh, 76px);
+        left: clamp(22px, 6vw, 78px);
+        z-index: 6;
+        max-width: min(410px, calc(100% - 44px));
+      }
+
       h1 {
-        font-size: 44px;
-        margin-bottom: 8px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        align-items: baseline;
+        max-width: 100%;
+        margin: 0;
+        color: #a9c7ec;
+        font-size: 16px;
+        font-weight: 500;
+        line-height: 1.4;
+        letter-spacing: 0;
       }
-      p {
-        line-height: 1.7;
-        opacity: 0.85;
+
+      .identity-name {
+        color: var(--ink);
+        font-weight: 800;
       }
-      footer {
-        margin-top: 64px;
+
+      .orbit-field {
+        position: absolute;
+        inset: 0;
+        z-index: 2;
+      }
+
+      .planet {
+        --planet-size: 96px;
+        --planet-a: #f4b456;
+        --planet-b: #8b4720;
+        --planet-c: #fff2c8;
+        position: absolute;
+        left: calc(var(--x) * 1%);
+        top: calc(var(--y) * 1%);
+        width: var(--planet-size);
+        height: var(--planet-size);
+        padding: 0;
+        border: 0;
+        border-radius: 50%;
+        color: inherit;
+        cursor: pointer;
+        transform: translate(-50%, -50%);
+        background:
+          radial-gradient(circle at 32% 24%, var(--planet-c) 0 7%, transparent 8%),
+          radial-gradient(circle at 35% 31%, var(--planet-a) 0 18%, transparent 36%),
+          radial-gradient(circle at 62% 68%, rgba(0, 0, 0, 0.35), transparent 42%),
+          radial-gradient(circle at 50% 50%, var(--planet-a), var(--planet-b) 72%);
+        box-shadow:
+          inset -18px -20px 24px rgba(0, 0, 0, 0.34),
+          inset 10px 8px 18px rgba(255, 255, 255, 0.18),
+          0 0 0 1px rgba(255, 255, 255, 0.13),
+          0 0 46px color-mix(in srgb, var(--planet-a), transparent 34%);
+        transition:
+          transform 180ms ease,
+          filter 180ms ease,
+          box-shadow 180ms ease;
+      }
+
+      .planet::after {
+        position: absolute;
+        inset: -8px;
+        border-radius: inherit;
+        background: radial-gradient(circle, color-mix(in srgb, var(--planet-a), transparent 52%), transparent 66%);
+        filter: blur(14px);
+        opacity: 0.72;
+        z-index: -1;
+        content: "";
+      }
+
+      .planet:hover,
+      .planet:focus-visible,
+      .planet.is-active {
+        filter: saturate(1.22) brightness(1.1);
+        outline: none;
+        transform: translate(-50%, -50%) scale(1.08);
+      }
+
+      .planet[data-tone="cyan"] {
+        --planet-a: #77d9ee;
+        --planet-b: #1c5b78;
+        --planet-c: #e9ffff;
+      }
+
+      .planet[data-tone="violet"] {
+        --planet-a: #a996ff;
+        --planet-b: #493a8c;
+        --planet-c: #fff4ff;
+      }
+
+      .planet[data-tone="rose"] {
+        --planet-a: #ff9bb1;
+        --planet-b: #7f3046;
+        --planet-c: #fff4f6;
+      }
+
+      .planet-label {
+        position: absolute;
+        top: calc(100% + 13px);
+        left: 50%;
+        width: max-content;
+        max-width: 150px;
+        color: rgba(244, 247, 251, 0.88);
         font-size: 14px;
-        opacity: 0.6;
+        font-weight: 650;
+        text-align: center;
+        text-shadow: 0 2px 12px rgba(0, 0, 0, 0.8);
+        transform: translateX(-50%);
+      }
+
+      .info-card {
+        position: absolute;
+        left: 0;
+        top: 0;
+        z-index: 7;
+        width: min(292px, calc(100% - 36px));
+        padding: 16px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background:
+          linear-gradient(135deg, rgba(255, 255, 255, 0.08), transparent 42%),
+          var(--panel);
+        box-shadow: 0 18px 44px var(--shadow);
+        backdrop-filter: blur(18px);
+        opacity: 0;
+        pointer-events: none;
+        transform: translate3d(0, 10px, 0) scale(0.98);
+        transition:
+          opacity 150ms ease,
+          transform 150ms ease;
+      }
+
+      .info-card.is-visible {
+        opacity: 1;
+        transform: translate3d(0, 0, 0) scale(1);
+      }
+
+      .info-card p {
+        margin: 0;
+      }
+
+      .info-kicker {
+        color: #a9c7ec;
+        font-size: 12px;
+        font-weight: 600;
+        line-height: 1.4;
+      }
+
+      .info-title {
+        margin: 8px 0;
+        font-size: 16px;
+        font-weight: 800;
+        line-height: 1.35;
+      }
+
+      .info-desc {
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.65;
+      }
+
+      .horizon {
+        position: absolute;
+        right: 7%;
+        bottom: 0;
+        left: 7%;
+        z-index: 4;
+        height: 24%;
+        border-radius: 50% 50% 0 0 / 34% 34% 0 0;
+        background:
+          radial-gradient(ellipse at 50% 16%, rgba(190, 224, 255, 0.22), transparent 54%),
+          linear-gradient(180deg, rgba(4, 10, 22, 0.78), rgba(1, 5, 13, 0.9));
+        pointer-events: none;
+      }
+
+      .camp-scene {
+        position: absolute;
+        left: 51%;
+        bottom: 12%;
+        z-index: 5;
+        width: 154px;
+        height: 72px;
+        pointer-events: none;
+        transform: translateX(-50%);
+      }
+
+      .camp-scene::before {
+        position: absolute;
+        right: 12px;
+        bottom: 2px;
+        left: 12px;
+        height: 18px;
+        border-radius: 50%;
+        background: radial-gradient(ellipse at 50% 50%, rgba(3, 7, 18, 0.48), transparent 70%);
+        content: "";
+      }
+
+      .campfire {
+        position: absolute;
+        left: 50%;
+        bottom: 0;
+        width: 58px;
+        height: 58px;
+        transform: translateX(-50%);
+      }
+
+      .campfire::before {
+        position: absolute;
+        inset: 18px 10px 6px;
+        border-radius: 50% 50% 45% 45%;
+        background:
+          radial-gradient(circle at 50% 68%, rgba(255, 245, 194, 0.9), transparent 23%),
+          radial-gradient(circle at 44% 48%, rgba(255, 148, 70, 0.78), transparent 42%),
+          radial-gradient(circle at 58% 36%, rgba(224, 69, 57, 0.7), transparent 57%);
+        filter: blur(0.2px);
+        opacity: 0.82;
+        content: "";
+      }
+
+      .figure {
+        position: absolute;
+        bottom: 8px;
+        width: 30px;
+        height: 44px;
+        opacity: 0.78;
+      }
+
+      .figure::before {
+        position: absolute;
+        top: 0;
+        left: 10px;
+        width: 11px;
+        height: 11px;
+        border-radius: 50%;
+        background: rgba(202, 219, 244, 0.7);
+        box-shadow: 0 0 12px rgba(170, 205, 255, 0.16);
+        content: "";
+      }
+
+      .figure::after {
+        position: absolute;
+        top: 13px;
+        left: 7px;
+        width: 17px;
+        height: 22px;
+        background: linear-gradient(150deg, rgba(73, 101, 139, 0.88), rgba(24, 38, 63, 0.86));
+        clip-path: polygon(50% 0, 100% 35%, 78% 100%, 19% 100%, 0 35%);
+        content: "";
+      }
+
+      .figure-left {
+        left: 20px;
+        transform: rotate(5deg);
+      }
+
+      .figure-left .leg-a,
+      .figure-left .leg-b,
+      .figure-right .leg-a,
+      .figure-right .leg-b {
+        position: absolute;
+        bottom: 0;
+        width: 17px;
+        height: 6px;
+        border-radius: 999px;
+        background: rgba(30, 46, 72, 0.86);
+      }
+
+      .figure-left .leg-a {
+        left: 1px;
+        transform: rotate(-19deg);
+      }
+
+      .figure-left .leg-b {
+        right: 1px;
+        transform: rotate(22deg);
+      }
+
+      .figure-right {
+        right: 31px;
+        transform: rotate(-5deg) scale(0.94);
+      }
+
+      .figure-right .leg-a {
+        left: 1px;
+        transform: rotate(-20deg);
+      }
+
+      .figure-right .leg-b {
+        right: 1px;
+        transform: rotate(20deg);
+      }
+
+      .dog {
+        position: absolute;
+        right: 9px;
+        bottom: 10px;
+        width: 31px;
+        height: 20px;
+        opacity: 0.8;
+      }
+
+      .dog::before {
+        position: absolute;
+        right: 6px;
+        bottom: 3px;
+        width: 22px;
+        height: 12px;
+        border-radius: 9px 8px 7px 8px;
+        background: linear-gradient(150deg, rgba(151, 104, 82, 0.88), rgba(67, 48, 48, 0.9));
+        content: "";
+      }
+
+      .dog::after {
+        position: absolute;
+        right: 0;
+        bottom: 9px;
+        width: 10px;
+        height: 10px;
+        border-radius: 5px 5px 4px 4px;
+        background: rgba(115, 76, 65, 0.92);
+        box-shadow:
+          -1px -5px 0 -2px rgba(88, 58, 52, 0.9),
+          -24px 4px 0 -4px rgba(111, 78, 66, 0.78);
+        content: "";
+      }
+
+      .campfire::after {
+        position: absolute;
+        right: 2px;
+        bottom: 0;
+        left: 2px;
+        height: 18px;
+        border-radius: 50%;
+        background:
+          linear-gradient(28deg, transparent 0 38%, rgba(92, 54, 36, 0.82) 39% 51%, transparent 52%),
+          linear-gradient(-28deg, transparent 0 38%, rgba(68, 45, 34, 0.82) 39% 51%, transparent 52%),
+          radial-gradient(ellipse at 50% 44%, rgba(255, 128, 58, 0.22), transparent 68%);
+        content: "";
+      }
+
+      .footer {
+        padding: 0;
+      }
+
+      @media (max-width: 760px) {
+        .shell {
+          padding: 0;
+        }
+
+        .footer {
+          align-items: flex-start;
+          flex-direction: column;
+        }
+
+        .sky {
+          min-height: 100vh;
+          padding-top: 0;
+        }
+
+        .dome {
+          min-height: 100vh;
+          border-radius: 0;
+        }
+
+        .intro {
+          top: 28px;
+          left: 20px;
+        }
+
+        .planet {
+          --planet-size: calc(var(--size) * 0.72px);
+        }
+
+        #games {
+          left: 27%;
+          top: 42%;
+        }
+
+        #travel {
+          left: 73%;
+          top: 37%;
+        }
+
+        #projects {
+          --planet-size: calc(var(--size) * 0.55px);
+          left: 56%;
+          top: 56%;
+        }
+
+        #yy {
+          --planet-size: calc(var(--size) * 0.6px);
+          left: 30%;
+          top: 56%;
+        }
+
+        .planet-label {
+          max-width: 112px;
+          white-space: normal;
+        }
+
+        .info-card {
+          width: min(270px, calc(100% - 28px));
+        }
+      }
+
+      @media (min-width: 761px) {
+        .planet {
+          --planet-size: calc(var(--size) * 1px);
+        }
+      }
+
+      @media (prefers-reduced-motion: no-preference) {
+        body::before {
+          animation: stars-drift 38s linear infinite;
+        }
+
+        .planet {
+          animation: planet-float 7s ease-in-out infinite;
+          animation-delay: calc(var(--x) * -80ms);
+        }
+
+        .campfire::before {
+          animation: fire-flicker 1.6s ease-in-out infinite;
+        }
+      }
+
+      @keyframes stars-drift {
+        to {
+          background-position:
+            190px 190px,
+            290px 340px,
+            440px 370px;
+        }
+      }
+
+      @keyframes planet-float {
+        0%,
+        100% {
+          margin-top: -5px;
+        }
+
+        50% {
+          margin-top: 7px;
+        }
+      }
+
+      @keyframes fire-flicker {
+        0%,
+        100% {
+          transform: scale(0.92, 1);
+          opacity: 0.72;
+        }
+
+        50% {
+          transform: scale(1.05, 1.12) translateY(-2px);
+          opacity: 0.92;
+        }
       }
     </style>
   </head>
 
   <body>
-    <main>
-      <h1>{name}</h1>
+    <main class="shell">
+      <section class="sky" aria-label="个人星图">
+        <div class="dome">
+          <div class="intro">
+            <h1><span>Operation Astro</span><span class="identity-name">{name}</span></h1>
+          </div>
 
-      <p>
-        Hi, this is Ziqian Zou.👋🏼
-      </p>
+          <div class="orbit-field" aria-label="Planet entries">
+            {
+              planets.map((planet) => (
+                <button
+                  class="planet"
+                  id={planet.id}
+                  type="button"
+                  data-title={planet.title}
+                  data-orbit={planet.orbit}
+                  data-description={planet.description}
+                  data-tone={planet.tone}
+                  style={`--x: ${planet.x}; --y: ${planet.y}; --size: ${planet.size};`}
+                  aria-label={`${planet.title}: ${planet.description}`}
+                >
+                  <span class="planet-label">{planet.title}</span>
+                </button>
+              ))
+            }
+          </div>
 
-      <footer>
-        © {new Date().getFullYear()} {name}
+          <aside class="info-card" aria-live="polite" aria-hidden="true">
+            <p class="info-kicker" data-info-orbit></p>
+            <h2 class="info-title" data-info-title></h2>
+            <p class="info-desc" data-info-description></p>
+          </aside>
+
+          <div class="camp-scene" aria-hidden="true">
+            <div class="figure figure-left">
+              <span class="leg-a"></span>
+              <span class="leg-b"></span>
+            </div>
+            <div class="campfire"></div>
+            <div class="figure figure-right">
+              <span class="leg-a"></span>
+              <span class="leg-b"></span>
+            </div>
+            <div class="dog"></div>
+          </div>
+          <div class="horizon" aria-hidden="true"></div>
+        </div>
+      </section>
+
+      <footer class="footer">
+        <span>© {new Date().getFullYear()} {name}</span>
+        <span>Built with Astro, deployed through the edge.</span>
       </footer>
     </main>
+
+    <script>
+      const planets = Array.from(document.querySelectorAll(".planet"));
+      const title = document.querySelector("[data-info-title]");
+      const orbit = document.querySelector("[data-info-orbit]");
+      const description = document.querySelector("[data-info-description]");
+      const card = document.querySelector(".info-card");
+
+      const activatePlanet = (planet) => {
+        planets.forEach((item) => item.classList.toggle("is-active", item === planet));
+        if (title) title.textContent = planet.dataset.title || "";
+        if (orbit) orbit.textContent = planet.dataset.orbit || "";
+        if (description) description.textContent = planet.dataset.description || "";
+        if (card) {
+          const dome = planet.closest(".dome");
+          const domeRect = dome.getBoundingClientRect();
+          const planetRect = planet.getBoundingClientRect();
+          const cardWidth = Math.min(292, domeRect.width - 36);
+          const cardHeight = card.offsetHeight;
+          const planetCenter = planetRect.left - domeRect.left + planetRect.width / 2;
+          let left = planetCenter - cardWidth / 2;
+          let top = planetRect.top - domeRect.top - cardHeight - 22;
+
+          left = Math.min(Math.max(18, left), domeRect.width - cardWidth - 18);
+
+          if (top < 18) {
+            top = planetRect.bottom - domeRect.top + 22;
+          }
+
+          card.style.left = `${Math.max(18, left)}px`;
+          card.style.top = `${Math.max(18, top)}px`;
+          card.classList.add("is-visible");
+          card.setAttribute("aria-hidden", "false");
+        }
+      };
+
+      const hideCard = () => {
+        planets.forEach((item) => item.classList.remove("is-active"));
+        if (card) {
+          card.classList.remove("is-visible");
+          card.setAttribute("aria-hidden", "true");
+        }
+      };
+
+      planets.forEach((planet) => {
+        planet.addEventListener("mouseenter", () => activatePlanet(planet));
+        planet.addEventListener("mouseleave", hideCard);
+        planet.addEventListener("focus", () => activatePlanet(planet));
+        planet.addEventListener("blur", hideCard);
+      });
+    </script>
   </body>
 </html>
