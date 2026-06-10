@@ -400,169 +400,138 @@ const planets = [
         pointer-events: none;
       }
 
+      .fire-reflection {
+        position: absolute;
+        left: calc(50% + clamp(48px, 6.5vw, 82px));
+        bottom: 7.4%;
+        z-index: 4;
+        width: clamp(250px, 33vw, 420px);
+        height: clamp(96px, 12vw, 156px);
+        border-radius: 50%;
+        background:
+          radial-gradient(ellipse at 50% 42%, rgba(255, 151, 55, 0.34), transparent 30%),
+          radial-gradient(ellipse at 50% 58%, rgba(255, 209, 111, 0.2), transparent 62%);
+        filter: blur(12px);
+        opacity: 0.72;
+        pointer-events: none;
+        transform: translateX(-50%);
+      }
+
       .camp-scene {
         position: absolute;
-        left: 51%;
-        bottom: 12%;
+        left: 50%;
+        bottom: 8.8%;
         z-index: 5;
-        width: 154px;
-        height: 72px;
+        width: clamp(360px, 48vw, 610px);
+        height: clamp(170px, 22vw, 276px);
         pointer-events: none;
         transform: translateX(-50%);
       }
 
       .camp-scene::before {
         position: absolute;
-        right: 12px;
-        bottom: 2px;
-        left: 12px;
-        height: 18px;
+        right: 6%;
+        bottom: 3%;
+        left: 3%;
+        height: 22%;
         border-radius: 50%;
-        background: radial-gradient(ellipse at 50% 50%, rgba(3, 7, 18, 0.48), transparent 70%);
+        background: radial-gradient(ellipse at 50% 50%, rgba(3, 7, 18, 0.38), transparent 72%);
         content: "";
       }
 
-      .campfire {
+      .camp-item {
         position: absolute;
-        left: 50%;
+        height: auto;
+        object-fit: contain;
+        user-select: none;
+      }
+
+      .camp-car {
+        left: 0;
+        bottom: 16%;
+        z-index: 1;
+        width: 39%;
+        --fire-lit-filter: brightness(0.84) saturate(0.92);
+        filter: var(--fire-lit-filter);
+      }
+
+      .camp-people {
+        left: 32%;
+        bottom: 8%;
+        z-index: 3;
+        width: 28%;
+        --fire-lit-filter: brightness(0.8) saturate(0.9);
+        filter: var(--fire-lit-filter);
+      }
+
+      .camp-fire {
+        left: 53%;
         bottom: 0;
+        z-index: 4;
+        width: 21%;
+        filter: drop-shadow(0 0 18px rgba(255, 134, 48, 0.24));
+      }
+
+      .fire-sparks {
+        position: absolute;
+        left: 63.5%;
+        bottom: 31%;
+        z-index: 5;
         width: 58px;
-        height: 58px;
+        height: 68px;
+        pointer-events: none;
         transform: translateX(-50%);
       }
 
-      .campfire::before {
-        position: absolute;
-        inset: 18px 10px 6px;
-        border-radius: 50% 50% 45% 45%;
-        background:
-          radial-gradient(circle at 50% 68%, rgba(255, 245, 194, 0.9), transparent 23%),
-          radial-gradient(circle at 44% 48%, rgba(255, 148, 70, 0.78), transparent 42%),
-          radial-gradient(circle at 58% 36%, rgba(224, 69, 57, 0.7), transparent 57%);
-        filter: blur(0.2px);
-        opacity: 0.82;
-        content: "";
-      }
-
-      .figure {
-        position: absolute;
-        bottom: 8px;
-        width: 30px;
-        height: 44px;
-        opacity: 0.78;
-      }
-
-      .figure::before {
-        position: absolute;
-        top: 0;
-        left: 10px;
-        width: 11px;
-        height: 11px;
-        border-radius: 50%;
-        background: rgba(202, 219, 244, 0.7);
-        box-shadow: 0 0 12px rgba(170, 205, 255, 0.16);
-        content: "";
-      }
-
-      .figure::after {
-        position: absolute;
-        top: 13px;
-        left: 7px;
-        width: 17px;
-        height: 22px;
-        background: linear-gradient(150deg, rgba(73, 101, 139, 0.88), rgba(24, 38, 63, 0.86));
-        clip-path: polygon(50% 0, 100% 35%, 78% 100%, 19% 100%, 0 35%);
-        content: "";
-      }
-
-      .figure-left {
-        left: 20px;
-        transform: rotate(5deg);
-      }
-
-      .figure-left .leg-a,
-      .figure-left .leg-b,
-      .figure-right .leg-a,
-      .figure-right .leg-b {
+      .fire-sparks span {
         position: absolute;
         bottom: 0;
-        width: 17px;
-        height: 6px;
-        border-radius: 999px;
-        background: rgba(30, 46, 72, 0.86);
-      }
-
-      .figure-left .leg-a {
-        left: 1px;
-        transform: rotate(-19deg);
-      }
-
-      .figure-left .leg-b {
-        right: 1px;
-        transform: rotate(22deg);
-      }
-
-      .figure-right {
-        right: 31px;
-        transform: rotate(-5deg) scale(0.94);
-      }
-
-      .figure-right .leg-a {
-        left: 1px;
-        transform: rotate(-20deg);
-      }
-
-      .figure-right .leg-b {
-        right: 1px;
-        transform: rotate(20deg);
-      }
-
-      .dog {
-        position: absolute;
-        right: 9px;
-        bottom: 10px;
-        width: 31px;
-        height: 20px;
-        opacity: 0.8;
-      }
-
-      .dog::before {
-        position: absolute;
-        right: 6px;
-        bottom: 3px;
-        width: 22px;
-        height: 12px;
-        border-radius: 9px 8px 7px 8px;
-        background: linear-gradient(150deg, rgba(151, 104, 82, 0.88), rgba(67, 48, 48, 0.9));
-        content: "";
-      }
-
-      .dog::after {
-        position: absolute;
-        right: 0;
-        bottom: 9px;
-        width: 10px;
-        height: 10px;
-        border-radius: 5px 5px 4px 4px;
-        background: rgba(115, 76, 65, 0.92);
-        box-shadow:
-          -1px -5px 0 -2px rgba(88, 58, 52, 0.9),
-          -24px 4px 0 -4px rgba(111, 78, 66, 0.78);
-        content: "";
-      }
-
-      .campfire::after {
-        position: absolute;
-        right: 2px;
-        bottom: 0;
-        left: 2px;
-        height: 18px;
+        left: 50%;
+        width: var(--spark-size, 4px);
+        height: var(--spark-size, 4px);
         border-radius: 50%;
-        background:
-          linear-gradient(28deg, transparent 0 38%, rgba(92, 54, 36, 0.82) 39% 51%, transparent 52%),
-          linear-gradient(-28deg, transparent 0 38%, rgba(68, 45, 34, 0.82) 39% 51%, transparent 52%),
-          radial-gradient(ellipse at 50% 44%, rgba(255, 128, 58, 0.22), transparent 68%);
-        content: "";
+        background: rgba(255, 196, 93, 0.92);
+        box-shadow: 0 0 10px rgba(255, 139, 45, 0.72);
+        opacity: 0;
+      }
+
+      .fire-sparks .spark-small {
+        --spark-size: 2.5px;
+        background: rgba(255, 210, 130, 0.82);
+        box-shadow: 0 0 7px rgba(255, 139, 45, 0.5);
+      }
+
+      .fire-sparks span:nth-child(1) {
+        margin-left: -18px;
+      }
+
+      .fire-sparks span:nth-child(2) {
+        margin-left: -8px;
+      }
+
+      .fire-sparks span:nth-child(3) {
+        margin-left: 6px;
+      }
+
+      .fire-sparks span:nth-child(4) {
+        margin-left: 18px;
+      }
+
+      .fire-sparks span:nth-child(5) {
+        margin-left: 0;
+      }
+
+      .fire-sparks span:nth-child(6) {
+        margin-left: 13px;
+      }
+
+      .camp-dog {
+        right: 8%;
+        bottom: 9%;
+        z-index: 2;
+        width: 16%;
+        --fire-lit-filter: brightness(0.9) saturate(0.86);
+        filter: var(--fire-lit-filter);
       }
 
       .footer {
@@ -646,8 +615,42 @@ const planets = [
           animation-delay: calc(var(--x) * -80ms);
         }
 
-        .campfire::before {
-          animation: fire-flicker 1.6s ease-in-out infinite;
+        .fire-sparks span {
+          animation: spark-rise-bright 3.6s ease-out infinite;
+        }
+
+        .fire-sparks span:nth-child(2) {
+          animation-delay: 0.18s;
+        }
+
+        .fire-sparks span:nth-child(3) {
+          animation-delay: 0.36s;
+        }
+
+        .fire-sparks span:nth-child(4) {
+          animation-delay: 0.54s;
+        }
+
+        .fire-sparks .spark-small {
+          animation-name: spark-rise-dim;
+        }
+
+        .fire-sparks .spark-small:nth-child(5) {
+          animation-delay: 0.12s;
+        }
+
+        .fire-sparks .spark-small:nth-child(6) {
+          animation-delay: 0.46s;
+        }
+
+        .camp-car,
+        .camp-people,
+        .camp-dog {
+          animation: firelight-shimmer 3.6s ease-in-out infinite;
+        }
+
+        .fire-reflection {
+          animation: ground-firelight 3.6s ease-in-out infinite;
         }
       }
 
@@ -671,16 +674,103 @@ const planets = [
         }
       }
 
-      @keyframes fire-flicker {
-        0%,
-        100% {
-          transform: scale(0.92, 1);
-          opacity: 0.72;
+      @keyframes spark-rise-bright {
+        0% {
+          opacity: 0;
+          transform: translate3d(0, 0, 0) scale(0.55);
         }
 
-        50% {
-          transform: scale(1.05, 1.12) translateY(-2px);
+        28% {
           opacity: 0.92;
+          transform: translate3d(0, -12px, 0) scale(0.9);
+        }
+
+        62% {
+          opacity: 0.48;
+          transform: translate3d(calc(var(--spark-drift, 8px) * 0.58), -42px, 0) scale(0.42);
+        }
+
+        100% {
+          opacity: 0;
+          transform: translate3d(var(--spark-drift, 8px), -66px, 0) scale(0.16);
+        }
+      }
+
+      @keyframes spark-rise-dim {
+        0% {
+          opacity: 0.62;
+          transform: translate3d(0, 0, 0) scale(0.82);
+        }
+
+        22% {
+          opacity: 0.38;
+          transform: translate3d(calc(var(--spark-drift, 8px) * 0.35), -20px, 0) scale(0.52);
+        }
+
+        36%,
+        72% {
+          opacity: 0;
+        }
+
+        82% {
+          opacity: 0.5;
+          transform: translate3d(0, 0, 0) scale(0.72);
+        }
+
+        100% {
+          opacity: 0;
+          transform: translate3d(var(--spark-drift, 8px), -34px, 0) scale(0.28);
+        }
+      }
+
+      @keyframes firelight-shimmer {
+        0%,
+        100% {
+          filter: var(--fire-lit-filter) drop-shadow(0 0 0 rgba(255, 134, 48, 0));
+        }
+
+        22% {
+          filter: brightness(0.88) saturate(0.92) drop-shadow(0 0 2px rgba(255, 139, 45, 0.06));
+        }
+
+        42% {
+          filter: brightness(1.12) saturate(1.12) drop-shadow(0 0 13px rgba(255, 150, 54, 0.22));
+        }
+
+        58% {
+          filter: brightness(1.04) saturate(1.06) drop-shadow(0 0 8px rgba(255, 139, 45, 0.16));
+        }
+
+        76% {
+          filter: brightness(0.9) saturate(0.94) drop-shadow(0 0 3px rgba(255, 139, 45, 0.08));
+        }
+      }
+
+      @keyframes ground-firelight {
+        0%,
+        100% {
+          opacity: 0.42;
+          transform: translateX(-50%) scale(0.9, 0.84);
+        }
+
+        22% {
+          opacity: 0.5;
+          transform: translateX(-50%) scale(0.96, 0.9);
+        }
+
+        42% {
+          opacity: 0.96;
+          transform: translateX(-50%) scale(1.12, 1.08);
+        }
+
+        58% {
+          opacity: 0.76;
+          transform: translateX(-50%) scale(1.04, 1);
+        }
+
+        76% {
+          opacity: 0.48;
+          transform: translateX(-50%) scale(0.94, 0.88);
         }
       }
     </style>
@@ -721,17 +811,20 @@ const planets = [
           </aside>
 
           <div class="camp-scene" aria-hidden="true">
-            <div class="figure figure-left">
-              <span class="leg-a"></span>
-              <span class="leg-b"></span>
+            <img class="camp-item camp-car" src="/camp/car_real.png" alt="" loading="eager" />
+            <img class="camp-item camp-people" src="/camp/people.png" alt="" loading="eager" />
+            <img class="camp-item camp-fire" src="/camp/fire.png" alt="" loading="eager" />
+            <div class="fire-sparks">
+              <span style="--spark-drift: -7px"></span>
+              <span style="--spark-drift: 5px"></span>
+              <span style="--spark-drift: 12px"></span>
+              <span style="--spark-drift: -2px"></span>
+              <span class="spark-small" style="--spark-drift: -14px"></span>
+              <span class="spark-small" style="--spark-drift: 18px"></span>
             </div>
-            <div class="campfire"></div>
-            <div class="figure figure-right">
-              <span class="leg-a"></span>
-              <span class="leg-b"></span>
-            </div>
-            <div class="dog"></div>
+            <img class="camp-item camp-dog" src="/camp/dog.png" alt="" loading="eager" />
           </div>
+          <div class="fire-reflection" aria-hidden="true"></div>
           <div class="horizon" aria-hidden="true"></div>
         </div>
       </section>
