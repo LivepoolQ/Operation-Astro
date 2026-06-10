@@ -1,6 +1,4 @@
 ---
-import { Image } from "astro:assets";
-
 const name = "Ziqian Zou";
 
 const planets = [
@@ -75,7 +73,7 @@ const planets = [
       }
 
       body {
-        min-height: 100vh;
+        min-height: 170vh;
         margin: 0;
         overflow-x: hidden;
         color: var(--ink);
@@ -146,7 +144,7 @@ const planets = [
       .shell {
         position: relative;
         display: grid;
-        min-height: 100vh;
+        min-height: 170vh;
         grid-template-rows: 1fr;
         padding: 0;
       }
@@ -166,14 +164,18 @@ const planets = [
       }
 
       .sky {
-        position: relative;
+        position: fixed;
+        inset: 0;
+        z-index: 0;
         display: grid;
         min-height: 100vh;
+        overflow: hidden;
         place-items: center;
         padding: 0;
       }
 
       .dome {
+        --camp-lift: 0px;
         position: relative;
         width: 100%;
         min-height: 100vh;
@@ -390,23 +392,25 @@ const planets = [
 
       .horizon {
         position: absolute;
-        right: 7%;
-        bottom: 0;
-        left: 7%;
+        right: 0;
+        bottom: -38vh;
+        left: 0;
         z-index: 4;
-        height: 24%;
-        border-radius: 50% 50% 0 0 / 34% 34% 0 0;
+        height: 58vh;
+        border-radius: 50% 50% 0 0 / 20% 20% 0 0;
         background:
-          radial-gradient(ellipse at 50% 16%, rgba(190, 224, 255, 0.22), transparent 54%),
-          linear-gradient(180deg, rgba(4, 10, 22, 0.78), rgba(1, 5, 13, 0.9));
+          radial-gradient(ellipse at 50% 8%, #243247 0 18%, #111b2c 52%, #050913 100%),
+          linear-gradient(180deg, #172237, #050913);
         pointer-events: none;
+        transform: translate3d(0, calc(var(--camp-lift) * -1), 0);
+        transition: transform 80ms linear;
       }
 
       .fire-reflection {
         position: absolute;
         left: calc(50% + clamp(48px, 6.5vw, 82px));
-        bottom: 7.4%;
-        z-index: 4;
+        bottom: calc(-19vh + var(--camp-lift));
+        z-index: 5;
         width: clamp(250px, 33vw, 420px);
         height: clamp(96px, 12vw, 156px);
         border-radius: 50%;
@@ -422,12 +426,13 @@ const planets = [
       .camp-scene {
         position: absolute;
         left: 50%;
-        bottom: 8.8%;
-        z-index: 5;
+        bottom: -16vh;
+        z-index: 6;
         width: clamp(360px, 48vw, 610px);
         height: clamp(170px, 22vw, 276px);
-        pointer-events: none;
-        transform: translateX(-50%);
+        pointer-events: auto;
+        transform: translate3d(-50%, calc(var(--camp-lift) * -1), 0);
+        transition: transform 80ms linear;
       }
 
       .camp-scene::before {
@@ -443,9 +448,54 @@ const planets = [
 
       .camp-item {
         position: absolute;
+        display: block;
+        height: auto;
+        padding: 0;
+        border: 0;
+        background: transparent;
+        color: inherit;
+        line-height: 0;
+        cursor: pointer;
+        pointer-events: auto;
+        touch-action: manipulation;
+        user-select: none;
+        transform-origin: 50% 78%;
+        transition:
+          transform 180ms ease,
+          opacity 180ms ease,
+          filter 180ms ease;
+        appearance: none;
+      }
+
+      .camp-visual {
+        display: block;
+        width: 100%;
         height: auto;
         object-fit: contain;
+        pointer-events: none;
         user-select: none;
+      }
+
+      .camp-item:hover,
+      .camp-item:focus-visible,
+      .camp-item.is-camp-hovered {
+        outline: none;
+        transform: translateY(-4px) scale(1.035);
+      }
+
+      .camp-item:focus-visible::after,
+      .camp-item.is-camp-active::after {
+        position: absolute;
+        inset: -6px;
+        border: 1px solid rgba(255, 203, 116, 0.72);
+        border-radius: 16px;
+        box-shadow: 0 0 18px rgba(255, 143, 46, 0.28);
+        pointer-events: none;
+        content: "";
+      }
+
+      .camp-item.is-camp-active {
+        transform: translateY(-5px) scale(1.045);
       }
 
       .camp-car {
@@ -466,13 +516,13 @@ const planets = [
         filter: var(--fire-lit-filter);
       }
 
-      .camp-fire-stack {
+      .camp-fire {
         left: 53%;
         bottom: 0;
         z-index: 4;
         width: 21%;
         aspect-ratio: 1 / 1;
-        pointer-events: none;
+        filter: drop-shadow(0 0 18px rgba(255, 134, 48, 0.24));
       }
 
       .camp-fire-part {
@@ -481,6 +531,7 @@ const planets = [
         width: 100%;
         height: auto;
         object-fit: contain;
+        pointer-events: none;
         user-select: none;
       }
 
@@ -497,6 +548,7 @@ const planets = [
         width: 88%;
         height: auto;
         object-fit: contain;
+        pointer-events: none;
         transform: translateX(-50%);
         mix-blend-mode: screen;
         filter: drop-shadow(0 0 16px rgba(255, 143, 46, 0.3));
@@ -685,13 +737,6 @@ const planets = [
         }
       }
 
-        66%,
-        100% {
-          opacity: 1;
-          transform: translate3d(0, 1%, 0) scale(1.04, 0.98);
-        }
-      }
-
       @keyframes stars-drift {
         to {
           background-position:
@@ -848,14 +893,39 @@ const planets = [
             <p class="info-desc" data-info-description></p>
           </aside>
 
-          <div class="camp-scene" aria-hidden="true">
-            <Image class="camp-item camp-car" src="/camp/car_real.png" alt="" width={1448} height={1086} loading="eager" />
-            <Image class="camp-item camp-people" src="/camp/people.png" alt="" width={1448} height={1086} loading="eager" />
-            <div class="camp-item camp-fire-stack">
-              <Image class="camp-fire-part camp-wood" src="/camp/wood.png" alt="" width={1254} height={1254} loading="eager" />
-              <img class="camp-fire-gif" src="/camp/fire.gif" alt="" loading="eager" decoding="async" />
-            </div>
-            <div class="fire-sparks">
+          <div class="camp-scene" role="group" aria-label="Camp easter egg scene">
+            <button
+              class="camp-item camp-car"
+              type="button"
+              data-camp-item="car"
+              data-camp-label="Travel van"
+              aria-label="Interact with the travel van"
+            >
+              <img class="camp-visual" src="/camp/car_real.png" alt="" width="1448" height="1086" loading="eager" decoding="async" draggable="false" />
+            </button>
+
+            <button
+              class="camp-item camp-people"
+              type="button"
+              data-camp-item="people"
+              data-camp-label="Camp companions"
+              aria-label="Interact with the people sitting by the campfire"
+            >
+              <img class="camp-visual" src="/camp/people.png" alt="" width="1448" height="1086" loading="eager" decoding="async" draggable="false" />
+            </button>
+
+            <button
+              class="camp-item camp-fire"
+              type="button"
+              data-camp-item="fire"
+              data-camp-label="Campfire"
+              aria-label="Interact with the campfire"
+            >
+              <img class="camp-fire-part camp-wood" src="/camp/wood.png" alt="" width="1254" height="1254" loading="eager" decoding="async" draggable="false" />
+              <img class="camp-fire-gif" src="/camp/fire.gif" alt="" loading="eager" decoding="async" draggable="false" />
+            </button>
+
+            <div class="fire-sparks" aria-hidden="true">
               <span style="--spark-drift: -7px"></span>
               <span style="--spark-drift: 5px"></span>
               <span style="--spark-drift: 12px"></span>
@@ -863,7 +933,16 @@ const planets = [
               <span class="spark-small" style="--spark-drift: -14px"></span>
               <span class="spark-small" style="--spark-drift: 18px"></span>
             </div>
-            <Image class="camp-item camp-dog" src="/camp/dog.png" alt="" width={1254} height={1254} loading="eager" />
+
+            <button
+              class="camp-item camp-dog"
+              type="button"
+              data-camp-item="dog"
+              data-camp-label="Samoyed dog"
+              aria-label="Interact with the Samoyed dog"
+            >
+              <img class="camp-visual" src="/camp/dog.png" alt="" width="1254" height="1254" loading="eager" decoding="async" draggable="false" />
+            </button>
           </div>
           <div class="fire-reflection" aria-hidden="true"></div>
           <div class="horizon" aria-hidden="true"></div>
@@ -877,11 +956,17 @@ const planets = [
     </main>
 
     <script>
+      if ("scrollRestoration" in history) {
+        history.scrollRestoration = "manual";
+      }
+      window.scrollTo(0, 0);
+
       const planets = Array.from(document.querySelectorAll(".planet"));
       const title = document.querySelector("[data-info-title]");
       const orbit = document.querySelector("[data-info-orbit]");
       const description = document.querySelector("[data-info-description]");
       const card = document.querySelector(".info-card");
+      const dome = document.querySelector(".dome");
 
       const activatePlanet = (planet) => {
         planets.forEach((item) => item.classList.toggle("is-active", item === planet));
@@ -925,6 +1010,73 @@ const planets = [
         planet.addEventListener("focus", () => activatePlanet(planet));
         planet.addEventListener("blur", hideCard);
       });
+
+
+      const campItems = Array.from(document.querySelectorAll("[data-camp-item]"));
+
+      const emitCampEvent = (name, item, extra = {}) => {
+        const detail = {
+          id: item.dataset.campItem || "",
+          label: item.dataset.campLabel || "",
+          element: item,
+          ...extra,
+        };
+        window.dispatchEvent(new CustomEvent(`camp:${name}`, { detail }));
+      };
+
+      campItems.forEach((item) => {
+        item.addEventListener("mouseenter", () => {
+          item.classList.add("is-camp-hovered");
+          emitCampEvent("hover", item);
+        });
+
+        item.addEventListener("mouseleave", () => {
+          item.classList.remove("is-camp-hovered");
+          emitCampEvent("leave", item);
+        });
+
+        item.addEventListener("focus", () => {
+          item.classList.add("is-camp-hovered");
+          emitCampEvent("focus", item);
+        });
+
+        item.addEventListener("blur", () => {
+          item.classList.remove("is-camp-hovered", "is-camp-active");
+          emitCampEvent("blur", item);
+        });
+
+        item.addEventListener("click", () => {
+          campItems.forEach((other) => {
+            if (other !== item) other.classList.remove("is-camp-active");
+          });
+          item.classList.toggle("is-camp-active");
+          emitCampEvent("click", item, {
+            active: item.classList.contains("is-camp-active"),
+          });
+        });
+      });
+
+      const updateCampPerspective = () => {
+        if (!dome) return;
+        const maxLift = Math.min(270, Math.max(150, window.innerHeight * 0.28));
+        const travel = Math.max(1, window.innerHeight * 0.72);
+        const progress = Math.min(1, Math.max(0, window.scrollY / travel));
+        const eased = 1 - Math.pow(1 - progress, 2);
+        dome.style.setProperty("--camp-lift", `${Math.round(eased * maxLift)}px`);
+      };
+
+      let scrollFrame = 0;
+      const requestCampPerspective = () => {
+        if (scrollFrame) return;
+        scrollFrame = window.requestAnimationFrame(() => {
+          scrollFrame = 0;
+          updateCampPerspective();
+        });
+      };
+
+      window.addEventListener("scroll", requestCampPerspective, { passive: true });
+      window.addEventListener("resize", requestCampPerspective);
+      updateCampPerspective();
     </script>
   </body>
 </html>
