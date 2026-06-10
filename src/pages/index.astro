@@ -1,4 +1,6 @@
 ---
+import { Image } from "astro:assets";
+
 const name = "Ziqian Zou";
 
 const planets = [
@@ -464,12 +466,41 @@ const planets = [
         filter: var(--fire-lit-filter);
       }
 
-      .camp-fire {
+      .camp-fire-stack {
         left: 53%;
         bottom: 0;
         z-index: 4;
         width: 21%;
-        filter: drop-shadow(0 0 18px rgba(255, 134, 48, 0.24));
+        aspect-ratio: 1 / 1;
+        pointer-events: none;
+      }
+
+      .camp-fire-part {
+        position: absolute;
+        left: 0;
+        width: 100%;
+        height: auto;
+        object-fit: contain;
+        user-select: none;
+      }
+
+      .camp-wood {
+        bottom: 0;
+        z-index: 1;
+      }
+
+      .camp-fire-gif {
+        position: absolute;
+        left: 50%;
+        bottom: 30%;
+        z-index: 2;
+        width: 88%;
+        height: auto;
+        object-fit: contain;
+        transform: translateX(-50%);
+        mix-blend-mode: screen;
+        filter: drop-shadow(0 0 16px rgba(255, 143, 46, 0.3));
+        user-select: none;
       }
 
       .fire-sparks {
@@ -654,6 +685,13 @@ const planets = [
         }
       }
 
+        66%,
+        100% {
+          opacity: 1;
+          transform: translate3d(0, 1%, 0) scale(1.04, 0.98);
+        }
+      }
+
       @keyframes stars-drift {
         to {
           background-position:
@@ -811,9 +849,12 @@ const planets = [
           </aside>
 
           <div class="camp-scene" aria-hidden="true">
-            <img class="camp-item camp-car" src="/camp/car_real.png" alt="" loading="eager" />
-            <img class="camp-item camp-people" src="/camp/people.png" alt="" loading="eager" />
-            <img class="camp-item camp-fire" src="/camp/fire.png" alt="" loading="eager" />
+            <Image class="camp-item camp-car" src="/camp/car_real.png" alt="" width={1448} height={1086} loading="eager" />
+            <Image class="camp-item camp-people" src="/camp/people.png" alt="" width={1448} height={1086} loading="eager" />
+            <div class="camp-item camp-fire-stack">
+              <Image class="camp-fire-part camp-wood" src="/camp/wood.png" alt="" width={1254} height={1254} loading="eager" />
+              <img class="camp-fire-gif" src="/camp/fire.gif" alt="" loading="eager" decoding="async" />
+            </div>
             <div class="fire-sparks">
               <span style="--spark-drift: -7px"></span>
               <span style="--spark-drift: 5px"></span>
@@ -822,7 +863,7 @@ const planets = [
               <span class="spark-small" style="--spark-drift: -14px"></span>
               <span class="spark-small" style="--spark-drift: 18px"></span>
             </div>
-            <img class="camp-item camp-dog" src="/camp/dog.png" alt="" loading="eager" />
+            <Image class="camp-item camp-dog" src="/camp/dog.png" alt="" width={1254} height={1254} loading="eager" />
           </div>
           <div class="fire-reflection" aria-hidden="true"></div>
           <div class="horizon" aria-hidden="true"></div>
