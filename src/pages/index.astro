@@ -435,17 +435,6 @@ const planets = [
         transition: transform 80ms linear;
       }
 
-      .camp-scene::before {
-        position: absolute;
-        right: 6%;
-        bottom: 3%;
-        left: 3%;
-        height: 22%;
-        border-radius: 50%;
-        background: radial-gradient(ellipse at 50% 50%, rgba(3, 7, 18, 0.38), transparent 72%);
-        content: "";
-      }
-
       .camp-item {
         position: absolute;
         display: block;
@@ -468,6 +457,8 @@ const planets = [
       }
 
       .camp-visual {
+        position: relative;
+        z-index: 2;
         display: block;
         width: 100%;
         height: auto;
@@ -505,6 +496,60 @@ const planets = [
         width: 39%;
         --fire-lit-filter: brightness(0.84) saturate(0.92);
         filter: var(--fire-lit-filter);
+      }
+
+      .cast-shadow {
+        position: absolute;
+        z-index: 1;
+        border-radius: 50%;
+        background: radial-gradient(ellipse at 50% 50%, rgba(0, 0, 0, 0.68), transparent 70%);
+        filter: blur(8px);
+        opacity: 0.72;
+        pointer-events: none;
+        transform-origin: 50% 50%;
+      }
+
+      .car-shadow {
+        left: -16%;
+        bottom: -6%;
+        width: 128%;
+        height: 80%;
+        transform: rotate(8deg) skewX(-26deg);
+        opacity: 0.64;
+      }
+
+      .people-shadow {
+        left: -31%;
+        bottom: 18%;
+        width: 108%;
+        height: 28%;
+        transform: rotate(10deg) skewX(-28deg);
+      }
+
+      .dog-shadow {
+        left: 62%;
+        bottom: 18%;
+        width: 106%;
+        height: 25%;
+        transform: rotate(-12deg) skewX(-28deg);
+      }
+
+      .people-reflection {
+        position: absolute;
+        left: 43%;
+        top: 31%;
+        z-index: 3;
+        width: 20%;
+        height: 34%;
+        border-radius: 48% 52% 56% 44%;
+        background:
+          radial-gradient(ellipse at 45% 24%, rgba(17, 19, 25, 0.32), transparent 24%),
+          linear-gradient(165deg, transparent 0 24%, rgba(15, 18, 26, 0.32) 25% 62%, transparent 63%);
+        filter: blur(3px);
+        mix-blend-mode: multiply;
+        opacity: 0.28;
+        pointer-events: none;
+        transform: rotate(-8deg) skewX(-9deg);
       }
 
       .camp-people {
@@ -732,6 +777,14 @@ const planets = [
           animation: firelight-shimmer 3.6s ease-in-out infinite;
         }
 
+        .cast-shadow {
+          animation: cast-shadow-shimmer 3.6s ease-in-out infinite;
+        }
+
+        .people-reflection {
+          animation: reflection-shimmer 3.6s ease-in-out infinite;
+        }
+
         .fire-reflection {
           animation: ground-firelight 3.6s ease-in-out infinite;
         }
@@ -829,6 +882,42 @@ const planets = [
         }
       }
 
+      @keyframes cast-shadow-shimmer {
+        0%,
+        100% {
+          opacity: 0.62;
+          filter: blur(7px);
+        }
+
+        42% {
+          opacity: 0.76;
+          filter: blur(8px);
+        }
+
+        76% {
+          opacity: 0.5;
+          filter: blur(6px);
+        }
+      }
+
+      @keyframes reflection-shimmer {
+        0%,
+        100% {
+          opacity: 0.22;
+          filter: blur(3.5px);
+        }
+
+        42% {
+          opacity: 0.38;
+          filter: blur(4px);
+        }
+
+        76% {
+          opacity: 0.18;
+          filter: blur(3px);
+        }
+      }
+
       @keyframes ground-firelight {
         0%,
         100% {
@@ -901,7 +990,9 @@ const planets = [
               data-camp-label="Travel van"
               aria-label="Interact with the travel van"
             >
+              <span class="cast-shadow car-shadow" aria-hidden="true"></span>
               <img class="camp-visual" src="/camp/car_real.png" alt="" width="1448" height="1086" loading="eager" decoding="async" draggable="false" />
+              <span class="people-reflection" aria-hidden="true"></span>
             </button>
 
             <button
@@ -911,6 +1002,7 @@ const planets = [
               data-camp-label="Camp companions"
               aria-label="Interact with the people sitting by the campfire"
             >
+              <span class="cast-shadow people-shadow" aria-hidden="true"></span>
               <img class="camp-visual" src="/camp/people.png" alt="" width="1448" height="1086" loading="eager" decoding="async" draggable="false" />
             </button>
 
@@ -941,6 +1033,7 @@ const planets = [
               data-camp-label="Samoyed dog"
               aria-label="Interact with the Samoyed dog"
             >
+              <span class="cast-shadow dog-shadow" aria-hidden="true"></span>
               <img class="camp-visual" src="/camp/dog.png" alt="" width="1254" height="1254" loading="eager" decoding="async" draggable="false" />
             </button>
           </div>
