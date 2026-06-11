@@ -668,6 +668,163 @@ const planets = [
         user-select: none;
       }
 
+      .campfire-modal {
+        position: fixed;
+        inset: 0;
+        z-index: 20;
+        display: grid;
+        place-items: center;
+        padding: 24px;
+        background: rgba(2, 6, 16, 0.72);
+        backdrop-filter: blur(10px);
+      }
+
+      .campfire-modal[hidden] {
+        display: none;
+      }
+
+      .campfire-panel {
+        position: relative;
+        width: min(420px, calc(100vw - 32px));
+        padding: 24px;
+        border: 1px solid rgba(255, 202, 121, 0.2);
+        border-radius: 8px;
+        background:
+          radial-gradient(ellipse at 50% 32%, rgba(255, 139, 45, 0.18), transparent 36%),
+          linear-gradient(180deg, rgba(16, 23, 39, 0.96), rgba(5, 9, 18, 0.98));
+        box-shadow:
+          0 28px 80px rgba(0, 0, 0, 0.48),
+          inset 0 1px 0 rgba(255, 255, 255, 0.06);
+      }
+
+      .campfire-close {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        display: grid;
+        width: 34px;
+        height: 34px;
+        place-items: center;
+        border: 1px solid rgba(231, 238, 251, 0.16);
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.04);
+        color: rgba(244, 247, 251, 0.82);
+        cursor: pointer;
+      }
+
+      .campfire-close:hover,
+      .campfire-close:focus-visible {
+        border-color: rgba(255, 202, 121, 0.36);
+        outline: none;
+      }
+
+      .campfire-visual {
+        position: relative;
+        display: grid;
+        height: 164px;
+        place-items: center;
+        margin-bottom: 8px;
+      }
+
+      .campfire-visual::before {
+        position: absolute;
+        width: 178px;
+        height: 96px;
+        border-radius: 50%;
+        background: radial-gradient(ellipse at 50% 50%, rgba(255, 139, 45, 0.2), transparent 68%);
+        filter: blur(14px);
+        content: "";
+      }
+
+      .campfire-visual img {
+        position: relative;
+        z-index: 1;
+        width: 132px;
+        height: auto;
+        mix-blend-mode: screen;
+      }
+
+      .campfire-title {
+        margin: 0;
+        font-size: 20px;
+        font-weight: 800;
+        line-height: 1.25;
+        text-align: center;
+      }
+
+      .campfire-copy {
+        min-height: 24px;
+        margin: 10px 0 18px;
+        color: rgba(232, 238, 249, 0.68);
+        font-size: 13px;
+        line-height: 1.7;
+        text-align: center;
+      }
+
+      .campfire-meter {
+        display: grid;
+        gap: 8px;
+        margin-bottom: 18px;
+      }
+
+      .campfire-meter-label {
+        display: flex;
+        justify-content: space-between;
+        color: rgba(244, 247, 251, 0.78);
+        font-size: 12px;
+        font-weight: 700;
+      }
+
+      .campfire-track {
+        height: 8px;
+        overflow: hidden;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.08);
+      }
+
+      .campfire-fill {
+        width: calc(var(--campfire-level, 0) * 1%);
+        height: 100%;
+        border-radius: inherit;
+        background: linear-gradient(90deg, #f97316, #facc15);
+        box-shadow: 0 0 18px rgba(255, 161, 54, 0.42);
+        transition: width 220ms ease;
+      }
+
+      .campfire-action {
+        width: 100%;
+        min-height: 44px;
+        border: 0;
+        border-radius: 8px;
+        background: linear-gradient(180deg, #ffd27a, #ff8a2a);
+        color: #1f1208;
+        cursor: pointer;
+        font: inherit;
+        font-size: 14px;
+        font-weight: 800;
+        box-shadow: 0 10px 26px rgba(255, 122, 24, 0.26);
+      }
+
+      .campfire-action:hover:not(:disabled),
+      .campfire-action:focus-visible:not(:disabled) {
+        filter: brightness(1.06);
+        outline: none;
+      }
+
+      .campfire-action:disabled {
+        cursor: not-allowed;
+        filter: grayscale(0.45) brightness(0.72);
+      }
+
+      .campfire-status {
+        min-height: 18px;
+        margin: 12px 0 0;
+        color: rgba(232, 238, 249, 0.52);
+        font-size: 12px;
+        line-height: 1.5;
+        text-align: center;
+      }
+
       .fire-sparks {
         position: absolute;
         left: 63.5%;
@@ -1245,6 +1402,28 @@ const planets = [
       </footer>
     </main>
 
+    <div class="campfire-modal" data-campfire-modal hidden role="dialog" aria-modal="true" aria-labelledby="campfire-title">
+      <div class="campfire-panel">
+        <button class="campfire-close" type="button" data-campfire-close aria-label="Close campfire">×</button>
+        <div class="campfire-visual" aria-hidden="true">
+          <img src="/camp/fire.gif" alt="" loading="lazy" decoding="async" draggable="false" />
+        </div>
+        <h2 class="campfire-title" id="campfire-title">Campfire</h2>
+        <p class="campfire-copy" data-campfire-copy>Checking the fire...</p>
+        <div class="campfire-meter" aria-hidden="true">
+          <div class="campfire-meter-label">
+            <span data-campfire-wood>0 logs</span>
+            <span>30 max</span>
+          </div>
+          <div class="campfire-track">
+            <div class="campfire-fill" data-campfire-fill></div>
+          </div>
+        </div>
+        <button class="campfire-action" type="button" data-campfire-add>Add one log</button>
+        <p class="campfire-status" data-campfire-status aria-live="polite"></p>
+      </div>
+    </div>
+
     <script>
       if ("scrollRestoration" in history) {
         history.scrollRestoration = "manual";
@@ -1344,6 +1523,136 @@ const planets = [
             active: item.classList.contains("is-camp-active"),
           });
         });
+      });
+
+      const DAY_MS = 24 * 60 * 60 * 1000;
+      const MAX_WOOD = 30;
+      const LOCAL_CAMPFIRE_KEY = "operation-astro-campfire";
+      const campfireModal = document.querySelector("[data-campfire-modal]");
+      const campfireClose = document.querySelector("[data-campfire-close]");
+      const campfireAdd = document.querySelector("[data-campfire-add]");
+      const campfireCopy = document.querySelector("[data-campfire-copy]");
+      const campfireWood = document.querySelector("[data-campfire-wood]");
+      const campfireFill = document.querySelector("[data-campfire-fill]");
+      const campfireStatus = document.querySelector("[data-campfire-status]");
+      let campfireSource = "api";
+
+      const getCampfireSnapshot = (state = {}) => {
+        const now = Date.now();
+        const burnUntil = Number.isFinite(state.burnUntil) ? state.burnUntil : 0;
+        const remainingMs = Math.max(0, burnUntil - now);
+        const woodCount = Math.min(MAX_WOOD, Math.ceil(remainingMs / DAY_MS));
+        return {
+          burnUntil,
+          remainingMs,
+          woodCount,
+          isFull: woodCount >= MAX_WOOD,
+        };
+      };
+
+      const formatRemaining = (remainingMs) => {
+        if (remainingMs <= 0) return "The fire is waiting for its first log.";
+        const days = Math.floor(remainingMs / DAY_MS);
+        const hours = Math.ceil((remainingMs % DAY_MS) / (60 * 60 * 1000));
+        if (days <= 0) return `${hours} hour${hours === 1 ? "" : "s"} of warmth left.`;
+        if (hours >= 24) return `${days + 1} day${days + 1 === 1 ? "" : "s"} of warmth left.`;
+        return `${days} day${days === 1 ? "" : "s"} ${hours} hour${hours === 1 ? "" : "s"} of warmth left.`;
+      };
+
+      const readLocalCampfire = () => {
+        try {
+          return getCampfireSnapshot(JSON.parse(localStorage.getItem(LOCAL_CAMPFIRE_KEY) || "{}"));
+        } catch {
+          return getCampfireSnapshot();
+        }
+      };
+
+      const writeLocalCampfire = (state) => {
+        localStorage.setItem(LOCAL_CAMPFIRE_KEY, JSON.stringify({ burnUntil: state.burnUntil }));
+      };
+
+      const renderCampfire = (state, status = "") => {
+        const snapshot = getCampfireSnapshot(state);
+        if (campfireCopy) campfireCopy.textContent = formatRemaining(snapshot.remainingMs);
+        if (campfireWood) campfireWood.textContent = `${snapshot.woodCount} log${snapshot.woodCount === 1 ? "" : "s"}`;
+        if (campfireFill) campfireFill.style.setProperty("--campfire-level", `${Math.round((snapshot.woodCount / MAX_WOOD) * 100)}`);
+        if (campfireAdd) {
+          campfireAdd.disabled = snapshot.isFull;
+          campfireAdd.textContent = snapshot.isFull ? "The fire is full" : "Add one log";
+        }
+        if (campfireStatus) campfireStatus.textContent = status;
+      };
+
+      const fetchCampfire = async () => {
+        try {
+          const response = await fetch("/api/campfire", {
+            headers: { Accept: "application/json" },
+            cache: "no-store",
+          });
+          if (!response.ok) throw new Error("Campfire API unavailable");
+          campfireSource = "api";
+          const state = await response.json();
+          renderCampfire(state);
+        } catch {
+          campfireSource = "local";
+          renderCampfire(readLocalCampfire(), "Local preview. Cloudflare KV will keep the shared fire online.");
+        }
+      };
+
+      const addCampfireWood = async () => {
+        if (!campfireAdd) return;
+        campfireAdd.disabled = true;
+        if (campfireStatus) campfireStatus.textContent = "Adding a log...";
+
+        if (campfireSource === "local") {
+          const current = readLocalCampfire();
+          const base = Math.max(Date.now(), current.burnUntil);
+          const next = getCampfireSnapshot({ burnUntil: Math.min(Date.now() + MAX_WOOD * DAY_MS, base + DAY_MS) });
+          writeLocalCampfire(next);
+          renderCampfire(next, "Saved in this browser for local preview.");
+          return;
+        }
+
+        try {
+          const response = await fetch("/api/campfire/add-wood", {
+            method: "POST",
+            headers: { Accept: "application/json" },
+          });
+          const state = await response.json();
+          if (!response.ok) throw new Error(state.error || "Could not add wood");
+          renderCampfire(state, "One log added.");
+        } catch {
+          campfireSource = "local";
+          const current = readLocalCampfire();
+          const base = Math.max(Date.now(), current.burnUntil);
+          const next = getCampfireSnapshot({ burnUntil: Math.min(Date.now() + MAX_WOOD * DAY_MS, base + DAY_MS) });
+          writeLocalCampfire(next);
+          renderCampfire(next, "Using local preview until the Cloudflare KV binding is ready.");
+        }
+      };
+
+      const openCampfire = () => {
+        if (!campfireModal) return;
+        campfireModal.hidden = false;
+        fetchCampfire();
+        campfireAdd?.focus();
+      };
+
+      const closeCampfire = () => {
+        if (campfireModal) campfireModal.hidden = true;
+      };
+
+      window.addEventListener("camp:click", (event) => {
+        if (event.detail?.id === "fire") openCampfire();
+      });
+
+      campfireAdd?.addEventListener("click", addCampfireWood);
+      campfireClose?.addEventListener("click", closeCampfire);
+      campfireModal?.addEventListener("click", (event) => {
+        if (event.target === campfireModal) closeCampfire();
+      });
+      window.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") closeCampfire();
       });
 
       const updateCampPerspective = () => {
