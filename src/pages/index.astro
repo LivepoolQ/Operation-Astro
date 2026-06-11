@@ -32,16 +32,6 @@ const planets = [
     size: 132,
     tone: "violet",
   },
-  {
-    id: "yy",
-    title: "YY Planet",
-    orbit: "Soft Orbit",
-    description: "A small planet for YY: photos, daily traces, anniversaries, and the happy time claimed by this dog.",
-    x: 33,
-    y: 70,
-    size: 86,
-    tone: "rose",
-  },
 ];
 ---
 
@@ -180,6 +170,7 @@ const planets = [
         --planet-depth: 1;
         --ridge-far-lift: 0px;
         --ridge-middle-lift: 0px;
+        --scene-start-offset: 14vh;
         position: relative;
         width: 100%;
         min-height: 100vh;
@@ -329,12 +320,6 @@ const planets = [
         --planet-c: #fff4ff;
       }
 
-      .planet[data-tone="rose"] {
-        --planet-a: #ff9bb1;
-        --planet-b: #7f3046;
-        --planet-c: #fff4f6;
-      }
-
       .planet-label {
         position: absolute;
         top: calc(100% + 13px);
@@ -344,9 +329,19 @@ const planets = [
         color: rgba(244, 247, 251, 0.88);
         font-size: 14px;
         font-weight: 650;
+        opacity: 0;
+        pointer-events: none;
         text-align: center;
         text-shadow: 0 2px 12px rgba(0, 0, 0, 0.8);
         transform: translateX(-50%);
+        transition: opacity 160ms ease, transform 160ms ease;
+      }
+
+      .planet:hover .planet-label,
+      .planet:focus-visible .planet-label,
+      .planet.is-active .planet-label {
+        opacity: 1;
+        transform: translateX(-50%) translateY(2px);
       }
 
       .info-card {
@@ -411,7 +406,7 @@ const planets = [
         background:
           linear-gradient(180deg, #18243a 0%, #111b2c 44%, #050913 100%);
         pointer-events: none;
-        transform: translate3d(0, calc(var(--camp-lift) * -1), 0);
+        transform: translate3d(0, calc(var(--scene-start-offset) - var(--camp-lift)), 0);
         transition: transform 80ms linear;
       }
 
@@ -424,6 +419,8 @@ const planets = [
         height: 100vh;
         overflow: hidden;
         pointer-events: none;
+        transform: translate3d(0, var(--scene-start-offset), 0);
+        transition: transform 80ms linear;
       }
 
       .landscape-layer {
@@ -473,14 +470,14 @@ const planets = [
         width: 100vw;
         height: clamp(132px, 16vw, 220px);
         pointer-events: none;
-        transform: translate3d(-50%, calc(var(--camp-lift) * -1), 0);
+        transform: translate3d(-50%, calc(var(--scene-start-offset) - var(--camp-lift)), 0);
         transition: transform 80ms linear;
       }
 
       .fire-reflection {
         position: absolute;
         left: calc(50% + clamp(48px, 6.5vw, 82px));
-        bottom: calc(-48vh + var(--camp-lift));
+        bottom: calc(-64vh + var(--camp-lift));
         z-index: 5;
         width: clamp(250px, 33vw, 420px);
         height: clamp(96px, 12vw, 156px);
@@ -491,7 +488,7 @@ const planets = [
         filter: blur(12px);
         opacity: 0.72;
         pointer-events: none;
-        transform: translateX(-50%);
+        transform: translate3d(-50%, var(--scene-start-offset), 0);
       }
 
       .camp-scene {
@@ -502,7 +499,7 @@ const planets = [
         width: clamp(360px, 48vw, 610px);
         height: clamp(170px, 22vw, 276px);
         pointer-events: auto;
-        transform: translate3d(-50%, calc(var(--camp-lift) * -1), 0);
+        transform: translate3d(-50%, calc(var(--scene-start-offset) - var(--camp-lift)), 0);
         transition: transform 80ms linear;
       }
 
@@ -779,12 +776,6 @@ const planets = [
         #projects {
           --planet-size: calc(var(--size) * 0.55px);
           left: 56%;
-          top: 56%;
-        }
-
-        #yy {
-          --planet-size: calc(var(--size) * 0.6px);
-          left: 30%;
           top: 56%;
         }
 
