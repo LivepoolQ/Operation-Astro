@@ -657,6 +657,37 @@ const planets = [
         user-select: none;
       }
 
+      .dome.is-camp-extinguished .camp-fire {
+        filter: none;
+      }
+
+      .dome.is-camp-extinguished .camp-fire-gif,
+      .dome.is-camp-extinguished .fire-sparks,
+      .dome.is-camp-extinguished .fire-reflection,
+      .dome.is-camp-extinguished .people-reflection {
+        opacity: 0;
+      }
+
+      .dome.is-camp-extinguished .fire-reflection {
+        animation: none;
+      }
+
+      .dome.is-camp-extinguished .camp-car,
+      .dome.is-camp-extinguished .camp-people,
+      .dome.is-camp-extinguished .camp-dog {
+        animation: none;
+        filter: brightness(0.38) saturate(0.38) contrast(0.92);
+      }
+
+      .dome.is-camp-extinguished .camp-wood {
+        filter: brightness(0.38) saturate(0.42);
+      }
+
+      .dome.is-camp-extinguished .cast-shadow {
+        animation: none;
+        opacity: 0.48;
+      }
+
       .campfire-modal {
         position: fixed;
         inset: 0;
@@ -803,6 +834,32 @@ const planets = [
       .campfire-action:disabled {
         cursor: not-allowed;
         filter: grayscale(0.45) brightness(0.72);
+      }
+
+      .campfire-secondary-action {
+        width: 100%;
+        min-height: 38px;
+        margin-top: 10px;
+        border: 1px solid rgba(232, 238, 249, 0.16);
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.04);
+        color: rgba(232, 238, 249, 0.72);
+        cursor: pointer;
+        font: inherit;
+        font-size: 13px;
+        font-weight: 700;
+      }
+
+      .campfire-secondary-action:hover:not(:disabled),
+      .campfire-secondary-action:focus-visible:not(:disabled) {
+        border-color: rgba(255, 202, 121, 0.28);
+        color: rgba(244, 247, 251, 0.92);
+        outline: none;
+      }
+
+      .campfire-secondary-action:disabled {
+        cursor: not-allowed;
+        opacity: 0.42;
       }
 
       .campfire-status {
@@ -1298,7 +1355,7 @@ const planets = [
               aria-label="Interact with the travel van"
             >
               <span class="cast-shadow car-shadow" aria-hidden="true"></span>
-              <img class="camp-visual" src="/camp/car_real.png" alt="" width="1448" height="1086" loading="eager" decoding="async" draggable="false" />
+              <img class="camp-visual" src="/camp/car_real.png" data-light-src="/camp/car_real.png" data-dark-src="/camp/car_dark.png" alt="" width="1448" height="1086" loading="eager" decoding="async" draggable="false" />
               <span class="people-reflection" aria-hidden="true"></span>
             </button>
 
@@ -1310,7 +1367,7 @@ const planets = [
               aria-label="Interact with the people sitting by the campfire"
             >
               <span class="cast-shadow people-shadow" aria-hidden="true"></span>
-              <img class="camp-visual" src="/camp/people.png" alt="" width="1448" height="1086" loading="eager" decoding="async" draggable="false" />
+              <img class="camp-visual" src="/camp/people.png" data-light-src="/camp/people.png" data-dark-src="/camp/people_dark.png" alt="" width="1448" height="1086" loading="eager" decoding="async" draggable="false" />
             </button>
 
             <button
@@ -1320,7 +1377,7 @@ const planets = [
               data-camp-label="Campfire"
               aria-label="Interact with the campfire"
             >
-              <img class="camp-fire-part camp-wood" src="/camp/wood.png" alt="" width="1254" height="1254" loading="eager" decoding="async" draggable="false" />
+              <img class="camp-fire-part camp-wood" src="/camp/wood.png" data-light-src="/camp/wood.png" data-dark-src="/camp/wood_dark.png" alt="" width="1254" height="1254" loading="eager" decoding="async" draggable="false" />
               <img class="camp-fire-gif" src="/camp/fire.gif" alt="" loading="eager" decoding="async" draggable="false" />
             </button>
 
@@ -1341,7 +1398,7 @@ const planets = [
               aria-label="Interact with the Samoyed dog"
             >
               <span class="cast-shadow dog-shadow" aria-hidden="true"></span>
-              <img class="camp-visual" src="/camp/dog.png" alt="" width="1254" height="1254" loading="eager" decoding="async" draggable="false" />
+              <img class="camp-visual" src="/camp/dog.png" data-light-src="/camp/dog.png" data-dark-src="/camp/dog_dark.png" alt="" width="1254" height="1254" loading="eager" decoding="async" draggable="false" />
             </button>
           </div>
           <div class="fire-reflection" aria-hidden="true"></div>
@@ -1409,6 +1466,7 @@ const planets = [
           </div>
         </div>
         <button class="campfire-action" type="button" data-campfire-add>Add one log</button>
+        <button class="campfire-secondary-action" type="button" data-campfire-extinguish>Extinguish fire</button>
         <p class="campfire-status" data-campfire-status aria-live="polite"></p>
       </div>
     </div>
@@ -1520,11 +1578,29 @@ const planets = [
       const campfireModal = document.querySelector("[data-campfire-modal]");
       const campfireClose = document.querySelector("[data-campfire-close]");
       const campfireAdd = document.querySelector("[data-campfire-add]");
+      const campfireExtinguish = document.querySelector("[data-campfire-extinguish]");
       const campfireCopy = document.querySelector("[data-campfire-copy]");
       const campfireWood = document.querySelector("[data-campfire-wood]");
       const campfireFill = document.querySelector("[data-campfire-fill]");
       const campfireStatus = document.querySelector("[data-campfire-status]");
+      const campSceneImages = Array.from(document.querySelectorAll("[data-light-src][data-dark-src]"));
+      const availableImageCache = new Map();
       let campfireSource = "api";
+      let campfireSceneRenderId = 0;
+
+      const isImageAvailable = (src) => {
+        if (availableImageCache.has(src)) return availableImageCache.get(src);
+
+        const check = new Promise((resolve) => {
+          const image = new Image();
+          image.onload = () => resolve(true);
+          image.onerror = () => resolve(false);
+          image.src = src;
+        });
+
+        availableImageCache.set(src, check);
+        return check;
+      };
 
       const getCampfireSnapshot = (state = {}) => {
         const now = Date.now();
@@ -1560,14 +1636,41 @@ const planets = [
         localStorage.setItem(LOCAL_CAMPFIRE_KEY, JSON.stringify({ burnUntil: state.burnUntil }));
       };
 
+      const applyCampfireScene = async (snapshot) => {
+        const renderId = ++campfireSceneRenderId;
+        const isExtinguished = snapshot.woodCount === 0 && snapshot.remainingMs <= 0;
+        dome?.classList.toggle("is-camp-extinguished", isExtinguished);
+        campfireModal?.classList.toggle("is-extinguished", isExtinguished);
+
+        await Promise.all(
+          campSceneImages.map(async (image) => {
+            const lightSrc = image.dataset.lightSrc || image.getAttribute("src") || "";
+            const darkSrc = image.dataset.darkSrc || "";
+            if (!isExtinguished) {
+              if (image.getAttribute("src") !== lightSrc) image.setAttribute("src", lightSrc);
+              return;
+            }
+
+            if (darkSrc && (await isImageAvailable(darkSrc))) {
+              if (renderId !== campfireSceneRenderId) return;
+              if (image.getAttribute("src") !== darkSrc) image.setAttribute("src", darkSrc);
+            }
+          }),
+        );
+      };
+
       const renderCampfire = (state, status = "") => {
         const snapshot = getCampfireSnapshot(state);
+        applyCampfireScene(snapshot);
         if (campfireCopy) campfireCopy.textContent = formatRemaining(snapshot.remainingMs);
         if (campfireWood) campfireWood.textContent = `${snapshot.woodCount} log${snapshot.woodCount === 1 ? "" : "s"}`;
         if (campfireFill) campfireFill.style.setProperty("--campfire-level", `${Math.round((snapshot.woodCount / MAX_WOOD) * 100)}`);
         if (campfireAdd) {
           campfireAdd.disabled = snapshot.isFull;
           campfireAdd.textContent = snapshot.isFull ? "The fire is full" : "Add one log";
+        }
+        if (campfireExtinguish) {
+          campfireExtinguish.disabled = snapshot.woodCount === 0 && snapshot.remainingMs <= 0;
         }
         if (campfireStatus) campfireStatus.textContent = status;
       };
@@ -1620,6 +1723,34 @@ const planets = [
         }
       };
 
+      const extinguishCampfire = async () => {
+        if (!campfireExtinguish) return;
+        campfireExtinguish.disabled = true;
+        if (campfireStatus) campfireStatus.textContent = "Letting the fire go dark...";
+
+        const next = getCampfireSnapshot({ burnUntil: 0, updatedAt: Date.now() });
+
+        if (campfireSource === "local") {
+          writeLocalCampfire(next);
+          renderCampfire(next, "The campfire is out in local preview.");
+          return;
+        }
+
+        try {
+          const response = await fetch("/api/campfire/extinguish", {
+            method: "POST",
+            headers: { Accept: "application/json" },
+          });
+          const state = await response.json();
+          if (!response.ok) throw new Error(state.error || "Could not extinguish fire");
+          renderCampfire(state, "The campfire is out.");
+        } catch {
+          campfireSource = "local";
+          writeLocalCampfire(next);
+          renderCampfire(next, "Using local preview until the Cloudflare KV binding is ready.");
+        }
+      };
+
       const openCampfire = () => {
         if (!campfireModal) return;
         campfireModal.hidden = false;
@@ -1636,6 +1767,7 @@ const planets = [
       });
 
       campfireAdd?.addEventListener("click", addCampfireWood);
+      campfireExtinguish?.addEventListener("click", extinguishCampfire);
       campfireClose?.addEventListener("click", closeCampfire);
       campfireModal?.addEventListener("click", (event) => {
         if (event.target === campfireModal) closeCampfire();
@@ -1643,6 +1775,8 @@ const planets = [
       window.addEventListener("keydown", (event) => {
         if (event.key === "Escape") closeCampfire();
       });
+
+      fetchCampfire();
 
       const updateCampPerspective = () => {
         if (!dome) return;
