@@ -253,8 +253,14 @@ const planets = [
 
       .orbit-field {
         position: absolute;
-        inset: 0;
+        top: 50%;
+        left: 50%;
         z-index: 2;
+        width: 136%;
+        height: 136%;
+        transform: translate(-50%, -50%) scale(var(--planet-depth));
+        transform-origin: 50% 50%;
+        transition: transform 80ms linear;
       }
 
       .planet {
@@ -272,7 +278,7 @@ const planets = [
         border-radius: 50%;
         color: inherit;
         cursor: pointer;
-        transform: translate(-50%, -50%) scale(var(--planet-depth));
+        transform: translate(-50%, -50%);
         background:
           radial-gradient(circle at 32% 24%, var(--planet-c) 0 7%, transparent 8%),
           radial-gradient(circle at 35% 31%, var(--planet-a) 0 18%, transparent 36%),
@@ -305,7 +311,7 @@ const planets = [
       .planet.is-active {
         filter: saturate(1.22) brightness(1.1);
         outline: none;
-        transform: translate(-50%, -50%) scale(calc(var(--planet-depth) * 1.08));
+        transform: translate(-50%, -50%) scale(1.08);
       }
 
       .planet[data-tone="cyan"] {
@@ -1157,7 +1163,7 @@ const planets = [
         const progress = Math.min(1, Math.max(0, window.scrollY / travel));
         const eased = 1 - Math.pow(1 - progress, 2);
         dome.style.setProperty("--camp-lift", `${Math.round(eased * maxLift)}px`);
-        dome.style.setProperty("--planet-depth", `${(1 - eased * 0.5).toFixed(3)}`);
+        dome.style.setProperty("--planet-depth", `${(1 - eased * 0.28).toFixed(3)}`);
       };
 
       let scrollFrame = 0;
