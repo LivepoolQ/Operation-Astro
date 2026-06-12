@@ -446,6 +446,19 @@ const planets = [
         transition: transform 80ms linear;
       }
 
+      .ridge-lighthouse {
+        position: absolute;
+        left: 27%;
+        bottom: 47.3%;
+        z-index: 2;
+        width: clamp(44px, 6.6vw, 108px);
+        height: auto;
+        opacity: 0.78;
+        filter: drop-shadow(0 0 14px rgba(255, 236, 188, 0.3));
+        transform: translateX(-50%);
+        user-select: none;
+      }
+
       .ridge-middle {
         bottom: -35vh;
         height: 71vh;
@@ -1287,6 +1300,7 @@ const planets = [
                   opacity="1"
                 />
               </svg>
+              <img class="ridge-lighthouse" src="/camp/lighthouse.png" alt="" width="1265" height="1205" loading="eager" decoding="async" draggable="false" />
             </div>
 
             <div class="landscape-layer forest-far">
