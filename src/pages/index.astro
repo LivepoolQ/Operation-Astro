@@ -680,7 +680,8 @@ const planets = [
       }
 
       .dome.is-camp-extinguished .camp-wood {
-        filter: brightness(0.38) saturate(0.42);
+        opacity: 0.82;
+        filter: brightness(0.88) saturate(0.78);
       }
 
       .dome.is-camp-extinguished .cast-shadow {
@@ -764,6 +765,16 @@ const planets = [
         width: 132px;
         height: auto;
         mix-blend-mode: screen;
+      }
+
+      .campfire-modal.is-extinguished .campfire-visual::before {
+        background: radial-gradient(ellipse at 50% 50%, rgba(132, 146, 166, 0.08), transparent 68%);
+      }
+
+      .campfire-modal.is-extinguished .campfire-visual img {
+        mix-blend-mode: normal;
+        opacity: 0.86;
+        filter: brightness(0.88) saturate(0.78);
       }
 
       .campfire-title {
@@ -1577,6 +1588,9 @@ const planets = [
       const DAY_MS = 24 * 60 * 60 * 1000;
       const MAX_WOOD = 30;
       const LOCAL_CAMPFIRE_KEY = "operation-astro-campfire";
+      const CAMP_WOOD_SRC = "/camp/wood.png";
+      const CAMP_FIRE_SRC = "/camp/fire.gif";
+      const CAMP_SMOKE_SRC = "/camp/smoke.gif";
       const campfireModal = document.querySelector("[data-campfire-modal]");
       const campfireClose = document.querySelector("[data-campfire-close]");
       const campfireAdd = document.querySelector("[data-campfire-add]");
@@ -1585,6 +1599,8 @@ const planets = [
       const campfireWood = document.querySelector("[data-campfire-wood]");
       const campfireFill = document.querySelector("[data-campfire-fill]");
       const campfireStatus = document.querySelector("[data-campfire-status]");
+      const campWoodImage = document.querySelector(".camp-wood");
+      const campfireVisualImage = document.querySelector(".campfire-visual img");
       let campfireSource = "api";
 
       const getCampfireSnapshot = (state = {}) => {
@@ -1625,6 +1641,8 @@ const planets = [
         const isExtinguished = snapshot.woodCount === 0 && snapshot.remainingMs <= 0;
         dome?.classList.toggle("is-camp-extinguished", isExtinguished);
         campfireModal?.classList.toggle("is-extinguished", isExtinguished);
+        if (campWoodImage) campWoodImage.src = isExtinguished ? CAMP_SMOKE_SRC : CAMP_WOOD_SRC;
+        if (campfireVisualImage) campfireVisualImage.src = isExtinguished ? CAMP_SMOKE_SRC : CAMP_FIRE_SRC;
       };
 
       const renderCampfire = (state, status = "") => {
