@@ -721,6 +721,7 @@ const planets = [
         position: absolute;
         top: 12px;
         right: 12px;
+        z-index: 3;
         display: grid;
         width: 34px;
         height: 34px;
@@ -744,6 +745,7 @@ const planets = [
         height: 164px;
         place-items: center;
         margin-bottom: 8px;
+        pointer-events: none;
       }
 
       .campfire-visual::before {
@@ -1355,7 +1357,7 @@ const planets = [
               aria-label="Interact with the travel van"
             >
               <span class="cast-shadow car-shadow" aria-hidden="true"></span>
-              <img class="camp-visual" src="/camp/car_real.png" data-light-src="/camp/car_real.png" data-dark-src="/camp/car_dark.png" alt="" width="1448" height="1086" loading="eager" decoding="async" draggable="false" />
+              <img class="camp-visual" src="/camp/car_real.png" alt="" width="1448" height="1086" loading="eager" decoding="async" draggable="false" />
               <span class="people-reflection" aria-hidden="true"></span>
             </button>
 
@@ -1367,7 +1369,7 @@ const planets = [
               aria-label="Interact with the people sitting by the campfire"
             >
               <span class="cast-shadow people-shadow" aria-hidden="true"></span>
-              <img class="camp-visual" src="/camp/people.png" data-light-src="/camp/people.png" data-dark-src="/camp/people_dark.png" alt="" width="1448" height="1086" loading="eager" decoding="async" draggable="false" />
+              <img class="camp-visual" src="/camp/people.png" alt="" width="1448" height="1086" loading="eager" decoding="async" draggable="false" />
             </button>
 
             <button
@@ -1377,7 +1379,7 @@ const planets = [
               data-camp-label="Campfire"
               aria-label="Interact with the campfire"
             >
-              <img class="camp-fire-part camp-wood" src="/camp/wood.png" data-light-src="/camp/wood.png" data-dark-src="/camp/wood_dark.png" alt="" width="1254" height="1254" loading="eager" decoding="async" draggable="false" />
+              <img class="camp-fire-part camp-wood" src="/camp/wood.png" alt="" width="1254" height="1254" loading="eager" decoding="async" draggable="false" />
               <img class="camp-fire-gif" src="/camp/fire.gif" alt="" loading="eager" decoding="async" draggable="false" />
             </button>
 
@@ -1398,7 +1400,7 @@ const planets = [
               aria-label="Interact with the Samoyed dog"
             >
               <span class="cast-shadow dog-shadow" aria-hidden="true"></span>
-              <img class="camp-visual" src="/camp/dog.png" data-light-src="/camp/dog.png" data-dark-src="/camp/dog_dark.png" alt="" width="1254" height="1254" loading="eager" decoding="async" draggable="false" />
+              <img class="camp-visual" src="/camp/dog.png" alt="" width="1254" height="1254" loading="eager" decoding="async" draggable="false" />
             </button>
           </div>
           <div class="fire-reflection" aria-hidden="true"></div>
@@ -1583,24 +1585,7 @@ const planets = [
       const campfireWood = document.querySelector("[data-campfire-wood]");
       const campfireFill = document.querySelector("[data-campfire-fill]");
       const campfireStatus = document.querySelector("[data-campfire-status]");
-      const campSceneImages = Array.from(document.querySelectorAll("[data-light-src][data-dark-src]"));
-      const availableImageCache = new Map();
       let campfireSource = "api";
-      let campfireSceneRenderId = 0;
-
-      const isImageAvailable = (src) => {
-        if (availableImageCache.has(src)) return availableImageCache.get(src);
-
-        const check = new Promise((resolve) => {
-          const image = new Image();
-          image.onload = () => resolve(true);
-          image.onerror = () => resolve(false);
-          image.src = src;
-        });
-
-        availableImageCache.set(src, check);
-        return check;
-      };
 
       const getCampfireSnapshot = (state = {}) => {
         const now = Date.now();
@@ -1636,27 +1621,10 @@ const planets = [
         localStorage.setItem(LOCAL_CAMPFIRE_KEY, JSON.stringify({ burnUntil: state.burnUntil }));
       };
 
-      const applyCampfireScene = async (snapshot) => {
-        const renderId = ++campfireSceneRenderId;
+      const applyCampfireScene = (snapshot) => {
         const isExtinguished = snapshot.woodCount === 0 && snapshot.remainingMs <= 0;
         dome?.classList.toggle("is-camp-extinguished", isExtinguished);
         campfireModal?.classList.toggle("is-extinguished", isExtinguished);
-
-        await Promise.all(
-          campSceneImages.map(async (image) => {
-            const lightSrc = image.dataset.lightSrc || image.getAttribute("src") || "";
-            const darkSrc = image.dataset.darkSrc || "";
-            if (!isExtinguished) {
-              if (image.getAttribute("src") !== lightSrc) image.setAttribute("src", lightSrc);
-              return;
-            }
-
-            if (darkSrc && (await isImageAvailable(darkSrc))) {
-              if (renderId !== campfireSceneRenderId) return;
-              if (image.getAttribute("src") !== darkSrc) image.setAttribute("src", darkSrc);
-            }
-          }),
-        );
       };
 
       const renderCampfire = (state, status = "") => {
