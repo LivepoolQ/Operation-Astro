@@ -704,6 +704,10 @@ const planets = [
         filter: brightness(0.38) saturate(0.38) contrast(0.92);
       }
 
+      .dome.is-camp-extinguished .camp-dog .camp-visual {
+        animation: none;
+      }
+
       .dome.is-camp-extinguished .camp-wood {
         opacity: 0.82;
         filter: brightness(0.88) saturate(0.78);
@@ -967,8 +971,14 @@ const planets = [
         bottom: 9%;
         z-index: 2;
         width: 16%;
+        cursor: url("/camp/cursor_dog_hover.png") 18 20, pointer;
         --fire-lit-filter: brightness(0.9) saturate(0.86);
         filter: var(--fire-lit-filter);
+      }
+
+      .camp-dog .camp-visual {
+        transform-origin: 50% 92%;
+        animation: dog-breathe 5.2s ease-in-out infinite;
       }
 
       .footer {
@@ -1200,6 +1210,17 @@ const planets = [
         64% {
           opacity: 0.38;
           transform: scale(1);
+        }
+      }
+
+      @keyframes dog-breathe {
+        0%,
+        100% {
+          transform: scaleY(1);
+        }
+
+        50% {
+          transform: scaleY(1.03);
         }
       }
 
