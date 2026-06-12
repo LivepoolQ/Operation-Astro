@@ -454,9 +454,28 @@ const planets = [
         width: clamp(44px, 6.6vw, 108px);
         height: auto;
         opacity: 0.78;
-        filter: drop-shadow(0 0 14px rgba(255, 236, 188, 0.3));
+        filter: drop-shadow(0 0 14px rgba(255, 236, 188, 0.26));
         transform: translateX(-50%);
+        transform-origin: 50% 62%;
         user-select: none;
+      }
+
+      .ridge-lighthouse::before {
+        position: absolute;
+        inset: -13%;
+        z-index: 0;
+        border-radius: 50%;
+        background:
+          radial-gradient(circle at 50% 48%, rgba(255, 244, 191, 0.16), transparent 38%),
+          radial-gradient(circle at 50% 50%, rgba(255, 231, 154, 0.07), transparent 68%);
+        filter: blur(7px);
+        opacity: 0.38;
+        animation: lighthouse-glow 7.5s ease-in-out infinite;
+        content: "";
+      }
+
+      .ridge-lighthouse .camp-visual {
+        filter: drop-shadow(0 0 9px rgba(255, 243, 192, 0.13));
       }
 
       .ridge-middle {
@@ -557,6 +576,16 @@ const planets = [
 
       .camp-item.is-camp-active {
         transform: translateY(-5px) scale(1.045);
+      }
+
+      .ridge-lighthouse:hover,
+      .ridge-lighthouse:focus-visible,
+      .ridge-lighthouse.is-camp-hovered {
+        transform: translateX(-50%) translateY(-2px) scale(1.018);
+      }
+
+      .ridge-lighthouse.is-camp-active {
+        transform: translateX(-50%) translateY(-3px) scale(1.026);
       }
 
       .camp-car {
@@ -1173,6 +1202,24 @@ const planets = [
         }
       }
 
+      @keyframes lighthouse-glow {
+        0%,
+        100% {
+          opacity: 0.34;
+          transform: scale(0.992);
+        }
+
+        48% {
+          opacity: 0.43;
+          transform: scale(1.006);
+        }
+
+        64% {
+          opacity: 0.38;
+          transform: scale(1);
+        }
+      }
+
       @keyframes cast-shadow-shimmer {
         0%,
         100% {
@@ -1300,7 +1347,15 @@ const planets = [
                   opacity="1"
                 />
               </svg>
-              <img class="ridge-lighthouse" src="/camp/lighthouse.png" alt="" width="1265" height="1205" loading="eager" decoding="async" draggable="false" />
+              <button
+                class="camp-item ridge-lighthouse"
+                type="button"
+                data-camp-item="lighthouse"
+                data-camp-label="Lighthouse"
+                aria-label="Interact with the lighthouse"
+              >
+                <img class="camp-visual" src="/camp/lighthouse.png" alt="" width="1265" height="1205" loading="eager" decoding="async" draggable="false" />
+              </button>
             </div>
 
             <div class="landscape-layer forest-far">
