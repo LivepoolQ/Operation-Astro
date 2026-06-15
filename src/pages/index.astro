@@ -1664,6 +1664,8 @@ const planets = [
       const CAMP_WOOD_SRC = "/camp/wood.png";
       const CAMP_FIRE_SRC = "/camp/fire.gif";
       const CAMP_SMOKE_SRC = "/camp/smoke.gif";
+      const CAMP_DOG_SRC = "/camp/dog.png";
+      const CAMP_DOG_SLEEP_SRC = "/camp/dog_sleep.png";
       const campfireModal = document.querySelector("[data-campfire-modal]");
       const campfireClose = document.querySelector("[data-campfire-close]");
       const campfireAdd = document.querySelector("[data-campfire-add]");
@@ -1674,6 +1676,7 @@ const planets = [
       const campfireStatus = document.querySelector("[data-campfire-status]");
       const campWoodImage = document.querySelector(".camp-wood");
       const campfireVisualImage = document.querySelector(".campfire-visual img");
+      const campDogImage = document.querySelector(".camp-dog .camp-visual");
       let campfireSource = "api";
 
       const getCampfireSnapshot = (state = {}) => {
@@ -1716,6 +1719,7 @@ const planets = [
         campfireModal?.classList.toggle("is-extinguished", isExtinguished);
         if (campWoodImage) campWoodImage.src = isExtinguished ? CAMP_SMOKE_SRC : CAMP_WOOD_SRC;
         if (campfireVisualImage) campfireVisualImage.src = isExtinguished ? CAMP_SMOKE_SRC : CAMP_FIRE_SRC;
+        if (campDogImage) campDogImage.src = isExtinguished ? CAMP_DOG_SLEEP_SRC : CAMP_DOG_SRC;
       };
 
       const renderCampfire = (state, status = "") => {
