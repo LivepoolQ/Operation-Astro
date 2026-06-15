@@ -919,15 +919,40 @@ const planets = [
         font-weight: 850;
       }
 
+      .campfire-message-toggle {
+        position: absolute;
+        top: 12px;
+        left: 16px;
+        z-index: 3;
+        min-height: 34px;
+        padding: 0 12px;
+        border: 1px solid rgba(255, 202, 121, 0.18);
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.04);
+        color: rgba(255, 236, 196, 0.88);
+        cursor: pointer;
+        font: inherit;
+        font-size: 12px;
+        font-weight: 800;
+      }
+
+      .campfire-message-toggle[hidden] {
+        display: none;
+      }
+
       .campfire-close:hover,
       .campfire-close:focus-visible,
       .campfire-help-toggle:hover,
       .campfire-help-toggle:focus-visible,
-      .campfire-help-toggle[aria-expanded="true"] {
+      .campfire-help-toggle[aria-expanded="true"],
+      .campfire-message-toggle:hover,
+      .campfire-message-toggle:focus-visible,
+      .campfire-message-toggle[aria-expanded="true"] {
         border-color: rgba(255, 202, 121, 0.36);
         outline: none;
       }
 
+      .campfire-message-panel,
       .campfire-help {
         display: grid;
         gap: 10px;
@@ -938,12 +963,164 @@ const planets = [
         background: rgba(255, 255, 255, 0.035);
       }
 
+      .campfire-message-panel[hidden],
       .campfire-help[hidden] {
         display: none;
       }
 
+      .campfire-message-panel label {
+        color: rgba(244, 247, 251, 0.82);
+        font-size: 12px;
+        font-weight: 800;
+      }
+
+      .campfire-message-panel textarea {
+        min-height: 82px;
+        resize: vertical;
+        border: 1px solid rgba(232, 238, 249, 0.14);
+        border-radius: 8px;
+        background: rgba(3, 7, 18, 0.5);
+        color: rgba(244, 247, 251, 0.9);
+        font: inherit;
+        font-size: 13px;
+        line-height: 1.55;
+        padding: 10px;
+      }
+
+      .campfire-message-panel textarea:focus {
+        border-color: rgba(255, 202, 121, 0.36);
+        outline: none;
+      }
+
+      .campfire-note-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+      }
+
+      .campfire-note {
+        min-height: 38px;
+        border: 1px solid rgba(232, 238, 249, 0.12);
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.035);
+        color: rgba(232, 238, 249, 0.72);
+        cursor: pointer;
+        font: inherit;
+        font-size: 11px;
+        line-height: 1.35;
+        padding: 8px;
+        text-align: left;
+      }
+
+      .campfire-note:hover,
+      .campfire-note:focus-visible {
+        border-color: rgba(255, 202, 121, 0.3);
+        color: rgba(244, 247, 251, 0.92);
+        outline: none;
+      }
+
+      .campfire-message-meta {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        color: rgba(232, 238, 249, 0.48);
+        font-size: 11px;
+      }
+
+      .campfire-message-submit,
       .campfire-help p {
         margin: 0;
+      }
+
+      .campfire-message-submit {
+        min-height: 40px;
+        border: 0;
+        border-radius: 8px;
+        background: linear-gradient(180deg, #ffd27a, #ff8a2a);
+        color: #1f1208;
+        cursor: pointer;
+        font: inherit;
+        font-size: 13px;
+        font-weight: 850;
+      }
+
+      .campfire-message-submit:disabled {
+        cursor: not-allowed;
+        filter: grayscale(0.45) brightness(0.72);
+      }
+
+      .campfire-message-submit:hover:not(:disabled),
+      .campfire-message-submit:focus-visible:not(:disabled) {
+        filter: brightness(1.06);
+        outline: none;
+      }
+
+      .campfire-message-confirm {
+        position: absolute;
+        inset: 0;
+        z-index: 4;
+        display: grid;
+        place-items: center;
+        padding: 18px;
+        background: rgba(2, 6, 16, 0.72);
+        backdrop-filter: blur(8px);
+      }
+
+      .campfire-message-confirm[hidden] {
+        display: none;
+      }
+
+      .campfire-message-confirm-box {
+        width: min(320px, 100%);
+        padding: 18px;
+        border: 1px solid rgba(255, 202, 121, 0.2);
+        border-radius: 8px;
+        background: linear-gradient(180deg, rgba(17, 27, 44, 0.98), rgba(5, 9, 18, 0.98));
+        box-shadow: 0 18px 60px rgba(0, 0, 0, 0.42);
+        text-align: center;
+      }
+
+      .campfire-message-confirm-box h3 {
+        margin: 0 0 8px;
+        color: rgba(255, 250, 224, 0.94);
+        font-size: 17px;
+      }
+
+      .campfire-message-confirm-box p {
+        margin: 0 0 14px;
+        color: rgba(232, 238, 249, 0.64);
+        font-size: 12px;
+        line-height: 1.55;
+      }
+
+      .campfire-message-confirm-actions {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+      }
+
+      .campfire-message-confirm-actions button {
+        min-height: 38px;
+        border-radius: 8px;
+        cursor: pointer;
+        font: inherit;
+        font-size: 13px;
+        font-weight: 800;
+      }
+
+      .campfire-message-confirm-send {
+        border: 0;
+        background: linear-gradient(180deg, #ffd27a, #ff8a2a);
+        color: #1f1208;
+      }
+
+      .campfire-message-confirm-cancel {
+        border: 1px solid rgba(232, 238, 249, 0.16);
+        background: rgba(255, 255, 255, 0.04);
+        color: rgba(232, 238, 249, 0.72);
+      }
+
+      .campfire-help p {
         color: rgba(232, 238, 249, 0.74);
         font-size: 12px;
         line-height: 1.55;
@@ -1916,11 +2093,27 @@ const planets = [
 
     <div class="campfire-modal" data-campfire-modal hidden role="dialog" aria-modal="true" aria-labelledby="campfire-title">
       <div class="campfire-panel">
+        <button class="campfire-message-toggle" type="button" data-campfire-message-toggle hidden aria-expanded="false" aria-controls="campfire-message-panel">Leave a message</button>
         <button class="campfire-help-toggle" type="button" data-campfire-help-toggle aria-expanded="false" aria-controls="campfire-help">?</button>
         <button class="campfire-close" type="button" data-campfire-close aria-label="Close campfire">×</button>
         <div class="campfire-help" id="campfire-help" data-campfire-help hidden>
           <p>Drag wood from stack to ash or fire to keep the camp fire lit.</p>
           <img src="/camp/add_wood_tip.gif" alt="" loading="lazy" decoding="async" draggable="false" />
+        </div>
+        <div class="campfire-message-panel" id="campfire-message-panel" data-campfire-message-panel hidden>
+          <label for="campfire-message-input">Leave something by the fire</label>
+          <textarea id="campfire-message-input" data-campfire-message-input maxlength="100" placeholder="Write a tiny note..." rows="4"></textarea>
+          <div class="campfire-note-grid" aria-label="Message templates">
+            <button class="campfire-note" type="button" data-campfire-note="I add some wood to your camp fire">I add some wood to your camp fire</button>
+            <button class="campfire-note" type="button" data-campfire-note="XXX dropping by">XXX dropping by</button>
+            <button class="campfire-note" type="button" data-campfire-note="Love &amp; Peace">Love &amp; Peace</button>
+            <button class="campfire-note" type="button" data-campfire-note="YY is a cute dog">YY is a cute dog</button>
+          </div>
+          <div class="campfire-message-meta">
+            <span data-campfire-message-hint>Local draft for now.</span>
+            <span><span data-campfire-message-count>0</span>/100</span>
+          </div>
+          <button class="campfire-message-submit" type="button" data-campfire-message-submit disabled>Leave this message</button>
         </div>
         <div class="campfire-stage">
           <div class="campfire-visual" data-campfire-drop aria-label="Drop a log into the campfire">
@@ -1945,6 +2138,16 @@ const planets = [
         <button type="button" data-campfire-add hidden>Add one log</button>
         <button class="campfire-secondary-action" type="button" data-campfire-extinguish>Extinguish fire</button>
         <p class="campfire-status" data-campfire-status aria-live="polite"></p>
+        <div class="campfire-message-confirm" data-campfire-message-confirm hidden role="dialog" aria-modal="true" aria-labelledby="campfire-message-confirm-title">
+          <div class="campfire-message-confirm-box">
+            <h3 id="campfire-message-confirm-title">Leave this message?</h3>
+            <p>This message will be sent to the developer. Thank you for stopping by.</p>
+            <div class="campfire-message-confirm-actions">
+              <button class="campfire-message-confirm-cancel" type="button" data-campfire-message-cancel>Cancel</button>
+              <button class="campfire-message-confirm-send" type="button" data-campfire-message-confirm-send>Confirm</button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -2078,6 +2281,8 @@ const planets = [
       const DAY_MS = 24 * 60 * 60 * 1000;
       const MAX_WOOD = 30;
       const LOCAL_CAMPFIRE_KEY = "operation-astro-campfire";
+      const LOCAL_CAMPFIRE_MESSAGE_UNLOCK_KEY = "operation-astro-campfire-message-unlocked";
+      const LOCAL_CAMPFIRE_MESSAGE_KEY = "operation-astro-campfire-message";
       const CAMP_WOOD_SRC = "/camp/wood.png";
       const CAMP_FIRE_SRC = "/camp/fire.gif";
       const CAMP_SMOKE_SRC = "/camp/smoke.gif";
@@ -2107,6 +2312,16 @@ const planets = [
       const campfireDragLog = document.querySelector("[data-campfire-drag-log]");
       const campfireHelpToggle = document.querySelector("[data-campfire-help-toggle]");
       const campfireHelp = document.querySelector("[data-campfire-help]");
+      const campfireMessageToggle = document.querySelector("[data-campfire-message-toggle]");
+      const campfireMessagePanel = document.querySelector("[data-campfire-message-panel]");
+      const campfireMessageInput = document.querySelector("[data-campfire-message-input]");
+      const campfireMessageNotes = Array.from(document.querySelectorAll("[data-campfire-note]"));
+      const campfireMessageCount = document.querySelector("[data-campfire-message-count]");
+      const campfireMessageSubmit = document.querySelector("[data-campfire-message-submit]");
+      const campfireMessageHint = document.querySelector("[data-campfire-message-hint]");
+      const campfireMessageConfirm = document.querySelector("[data-campfire-message-confirm]");
+      const campfireMessageCancel = document.querySelector("[data-campfire-message-cancel]");
+      const campfireMessageConfirmSend = document.querySelector("[data-campfire-message-confirm-send]");
       const campWoodImage = document.querySelector(".camp-wood");
       const campfireVisualImage = document.querySelector(".campfire-visual img");
       const campDogImage = document.querySelector(".camp-dog .camp-visual");
@@ -2125,6 +2340,44 @@ const planets = [
       let lighthouseTimer = 0;
       let lighthouseEntryTimer = 0;
       let lighthouseReturnTimer = 0;
+
+      const readLocalFlag = (key) => {
+        try {
+          return localStorage.getItem(key) === "true";
+        } catch {
+          return false;
+        }
+      };
+
+      const writeLocalFlag = (key, value) => {
+        try {
+          localStorage.setItem(key, String(value));
+        } catch {
+          // Local storage can be unavailable in private modes.
+        }
+      };
+
+      const readLocalMessage = () => {
+        try {
+          return JSON.parse(localStorage.getItem(LOCAL_CAMPFIRE_MESSAGE_KEY) || "null");
+        } catch {
+          return null;
+        }
+      };
+
+      const writeLocalMessage = (message) => {
+        try {
+          localStorage.setItem(
+            LOCAL_CAMPFIRE_MESSAGE_KEY,
+            JSON.stringify({
+              message,
+              createdAt: Date.now(),
+            }),
+          );
+        } catch {
+          // Keep the UI responsive even if local storage is blocked.
+        }
+      };
 
       const getCampfireSnapshot = (state = {}) => {
         const now = Date.now();
@@ -2172,12 +2425,71 @@ const planets = [
 
       const setCampfireHelp = (isOpen) => {
         if (!campfireHelp || !campfireHelpToggle) return;
+        if (isOpen) setCampfireMessagePanel(false);
         campfireHelp.hidden = !isOpen;
         campfireHelpToggle.setAttribute("aria-expanded", String(isOpen));
       };
 
       const toggleCampfireHelp = () => {
         setCampfireHelp(Boolean(campfireHelp?.hidden));
+      };
+
+      const getCampfireMessageText = () => {
+        if (!(campfireMessageInput instanceof HTMLTextAreaElement)) return "";
+        return campfireMessageInput.value.trim().slice(0, 100);
+      };
+
+      const updateCampfireMessageUi = () => {
+        const isUnlocked = readLocalFlag(LOCAL_CAMPFIRE_MESSAGE_UNLOCK_KEY);
+        const savedMessage = readLocalMessage();
+        const text = getCampfireMessageText();
+
+        if (campfireMessageToggle) {
+          campfireMessageToggle.hidden = !isUnlocked;
+          campfireMessageToggle.textContent = savedMessage?.message ? "Message left" : "Leave a message";
+        }
+
+        if (campfireMessageCount) {
+          campfireMessageCount.textContent = String(text.length);
+        }
+
+        if (campfireMessageSubmit) {
+          campfireMessageSubmit.disabled = text.length === 0;
+        }
+
+        if (campfireMessageHint) {
+          campfireMessageHint.textContent = savedMessage?.message ? "A local note is tucked beside the fire." : "Local draft for now.";
+        }
+      };
+
+      const setCampfireMessagePanel = (isOpen) => {
+        if (!campfireMessagePanel || !campfireMessageToggle) return;
+        if (isOpen) setCampfireHelp(false);
+        campfireMessagePanel.hidden = !isOpen;
+        campfireMessageToggle.setAttribute("aria-expanded", String(isOpen));
+        if (isOpen) {
+          const savedMessage = readLocalMessage();
+          if (savedMessage?.message && campfireMessageInput instanceof HTMLTextAreaElement && !campfireMessageInput.value) {
+            campfireMessageInput.value = savedMessage.message.slice(0, 100);
+          }
+          updateCampfireMessageUi();
+          campfireMessageInput?.focus();
+        }
+      };
+
+      const toggleCampfireMessagePanel = () => {
+        setCampfireMessagePanel(Boolean(campfireMessagePanel?.hidden));
+      };
+
+      const setCampfireMessageConfirm = (isOpen) => {
+        if (!campfireMessageConfirm) return;
+        campfireMessageConfirm.hidden = !isOpen;
+        if (isOpen) campfireMessageConfirmSend?.focus();
+      };
+
+      const unlockCampfireMessage = () => {
+        writeLocalFlag(LOCAL_CAMPFIRE_MESSAGE_UNLOCK_KEY, true);
+        updateCampfireMessageUi();
       };
 
       const applyCampfireScene = (snapshot) => {
@@ -2253,6 +2565,7 @@ const planets = [
           writeLocalCampfire(next);
           isAddingCampfireWood = false;
           renderCampfire(next, "Saved in this browser for local preview.");
+          unlockCampfireMessage();
           return;
         }
 
@@ -2265,6 +2578,7 @@ const planets = [
           if (!response.ok) throw new Error(state.error || "Could not add wood");
           isAddingCampfireWood = false;
           renderCampfire(state, "One log added.");
+          unlockCampfireMessage();
         } catch {
           campfireSource = "local";
           const current = readLocalCampfire();
@@ -2273,7 +2587,23 @@ const planets = [
           writeLocalCampfire(next);
           isAddingCampfireWood = false;
           renderCampfire(next, "Using local preview until the Cloudflare KV binding is ready.");
+          unlockCampfireMessage();
         }
+      };
+
+      const requestCampfireMessageSubmit = () => {
+        if (!getCampfireMessageText()) return;
+        setCampfireMessageConfirm(true);
+      };
+
+      const saveCampfireMessage = () => {
+        const message = getCampfireMessageText();
+        if (!message) return;
+        writeLocalMessage(message);
+        setCampfireMessageConfirm(false);
+        setCampfireMessagePanel(false);
+        updateCampfireMessageUi();
+        if (campfireStatus) campfireStatus.textContent = "Your note is tucked beside the campfire.";
       };
 
       const moveCampfireDragLog = (clientX, clientY) => {
@@ -2342,12 +2672,17 @@ const planets = [
         if (!campfireModal) return;
         campfireModal.hidden = false;
         setCampfireHelp(false);
+        setCampfireMessagePanel(false);
+        setCampfireMessageConfirm(false);
+        updateCampfireMessageUi();
         fetchCampfire();
         campfireWoodStack?.focus();
       };
 
       const closeCampfire = () => {
         setCampfireHelp(false);
+        setCampfireMessagePanel(false);
+        setCampfireMessageConfirm(false);
         if (campfireModal) campfireModal.hidden = true;
       };
 
@@ -2441,6 +2776,19 @@ const planets = [
       campfireWoodStack?.addEventListener("pointerup", endCampfireWoodDrag);
       campfireWoodStack?.addEventListener("pointercancel", endCampfireWoodDrag);
       campfireHelpToggle?.addEventListener("click", toggleCampfireHelp);
+      campfireMessageToggle?.addEventListener("click", toggleCampfireMessagePanel);
+      campfireMessageInput?.addEventListener("input", updateCampfireMessageUi);
+      campfireMessageNotes.forEach((note) => {
+        note.addEventListener("click", () => {
+          if (!(campfireMessageInput instanceof HTMLTextAreaElement)) return;
+          campfireMessageInput.value = (note.dataset.campfireNote || "").slice(0, 100);
+          updateCampfireMessageUi();
+          campfireMessageInput.focus();
+        });
+      });
+      campfireMessageSubmit?.addEventListener("click", requestCampfireMessageSubmit);
+      campfireMessageCancel?.addEventListener("click", () => setCampfireMessageConfirm(false));
+      campfireMessageConfirmSend?.addEventListener("click", saveCampfireMessage);
       campfireExtinguish?.addEventListener("click", extinguishCampfire);
       campfireClose?.addEventListener("click", closeCampfire);
       campDialogClose?.addEventListener("click", closeCampDialogue);
@@ -2457,6 +2805,7 @@ const planets = [
       });
 
       fetchCampfire();
+      updateCampfireMessageUi();
       window.setInterval(refreshCampfireClock, 60 * 1000);
 
       const updateCampPerspective = () => {
