@@ -900,10 +900,62 @@ const planets = [
         cursor: pointer;
       }
 
+      .campfire-help-toggle {
+        position: absolute;
+        top: 12px;
+        right: 54px;
+        z-index: 3;
+        display: grid;
+        width: 34px;
+        height: 34px;
+        place-items: center;
+        border: 1px solid rgba(255, 202, 121, 0.18);
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.04);
+        color: rgba(255, 236, 196, 0.86);
+        cursor: pointer;
+        font: inherit;
+        font-size: 14px;
+        font-weight: 850;
+      }
+
       .campfire-close:hover,
-      .campfire-close:focus-visible {
+      .campfire-close:focus-visible,
+      .campfire-help-toggle:hover,
+      .campfire-help-toggle:focus-visible,
+      .campfire-help-toggle[aria-expanded="true"] {
         border-color: rgba(255, 202, 121, 0.36);
         outline: none;
+      }
+
+      .campfire-help {
+        display: grid;
+        gap: 10px;
+        margin: 22px 0 14px;
+        padding: 12px;
+        border: 1px solid rgba(255, 202, 121, 0.14);
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.035);
+      }
+
+      .campfire-help[hidden] {
+        display: none;
+      }
+
+      .campfire-help p {
+        margin: 0;
+        color: rgba(232, 238, 249, 0.74);
+        font-size: 12px;
+        line-height: 1.55;
+        text-align: center;
+      }
+
+      .campfire-help img {
+        display: block;
+        width: 100%;
+        height: auto;
+        border-radius: 6px;
+        user-select: none;
       }
 
       .campfire-stage {
@@ -1864,7 +1916,12 @@ const planets = [
 
     <div class="campfire-modal" data-campfire-modal hidden role="dialog" aria-modal="true" aria-labelledby="campfire-title">
       <div class="campfire-panel">
+        <button class="campfire-help-toggle" type="button" data-campfire-help-toggle aria-expanded="false" aria-controls="campfire-help">?</button>
         <button class="campfire-close" type="button" data-campfire-close aria-label="Close campfire">×</button>
+        <div class="campfire-help" id="campfire-help" data-campfire-help hidden>
+          <p>Drag wood from stack to ash or fire to keep the camp fire lit.</p>
+          <img src="/camp/add_wood_tip.gif" alt="" loading="lazy" decoding="async" draggable="false" />
+        </div>
         <div class="campfire-stage">
           <div class="campfire-visual" data-campfire-drop aria-label="Drop a log into the campfire">
             <img src="/camp/fire.gif" alt="" loading="lazy" decoding="async" draggable="false" />
@@ -2048,6 +2105,8 @@ const planets = [
       const campfireDrop = document.querySelector("[data-campfire-drop]");
       const campfireWoodStack = document.querySelector("[data-campfire-wood-stack]");
       const campfireDragLog = document.querySelector("[data-campfire-drag-log]");
+      const campfireHelpToggle = document.querySelector("[data-campfire-help-toggle]");
+      const campfireHelp = document.querySelector("[data-campfire-help]");
       const campWoodImage = document.querySelector(".camp-wood");
       const campfireVisualImage = document.querySelector(".campfire-visual img");
       const campDogImage = document.querySelector(".camp-dog .camp-visual");
@@ -2109,6 +2168,16 @@ const planets = [
         if (campDialogSpeaker) campDialogSpeaker.textContent = dialogue.speaker;
         if (campDialogLine) campDialogLine.textContent = dialogue.line;
         campDialog.hidden = false;
+      };
+
+      const setCampfireHelp = (isOpen) => {
+        if (!campfireHelp || !campfireHelpToggle) return;
+        campfireHelp.hidden = !isOpen;
+        campfireHelpToggle.setAttribute("aria-expanded", String(isOpen));
+      };
+
+      const toggleCampfireHelp = () => {
+        setCampfireHelp(Boolean(campfireHelp?.hidden));
       };
 
       const applyCampfireScene = (snapshot) => {
@@ -2272,11 +2341,13 @@ const planets = [
       const openCampfire = () => {
         if (!campfireModal) return;
         campfireModal.hidden = false;
+        setCampfireHelp(false);
         fetchCampfire();
         campfireWoodStack?.focus();
       };
 
       const closeCampfire = () => {
+        setCampfireHelp(false);
         if (campfireModal) campfireModal.hidden = true;
       };
 
@@ -2369,6 +2440,7 @@ const planets = [
       });
       campfireWoodStack?.addEventListener("pointerup", endCampfireWoodDrag);
       campfireWoodStack?.addEventListener("pointercancel", endCampfireWoodDrag);
+      campfireHelpToggle?.addEventListener("click", toggleCampfireHelp);
       campfireExtinguish?.addEventListener("click", extinguishCampfire);
       campfireClose?.addEventListener("click", closeCampfire);
       campDialogClose?.addEventListener("click", closeCampDialogue);
