@@ -618,6 +618,60 @@ const planets = [
           drop-shadow(0 0 42px rgba(255, 244, 192, 0.16));
       }
 
+      body.is-lighthouse-returning .camp-dialog,
+      .dome.is-lighthouse-returning .intro,
+      .dome.is-lighthouse-returning .footer,
+      .dome.is-lighthouse-returning .info-card {
+        transition: opacity 900ms ease;
+      }
+
+      .dome.is-lighthouse-returning .orbit-field {
+        transition:
+          opacity 1200ms ease,
+          transform 1800ms cubic-bezier(0.2, 0.72, 0.12, 1);
+      }
+
+      .dome.is-lighthouse-returning .landscape-layers {
+        transition: transform 1800ms cubic-bezier(0.2, 0.72, 0.12, 1);
+      }
+
+      .dome.is-lighthouse-returning .ridge-far {
+        transition:
+          opacity 1500ms ease,
+          transform 1800ms cubic-bezier(0.2, 0.72, 0.12, 1);
+      }
+
+      .dome.is-lighthouse-returning .ridge-middle {
+        transition:
+          opacity 1200ms ease,
+          transform 1900ms cubic-bezier(0.2, 0.72, 0.12, 1);
+      }
+
+      .dome.is-lighthouse-returning .forest-far {
+        transition: transform 1700ms cubic-bezier(0.2, 0.72, 0.12, 1);
+      }
+
+      .dome.is-lighthouse-returning .horizon {
+        transition: transform 1500ms cubic-bezier(0.2, 0.72, 0.12, 1);
+      }
+
+      .dome.is-lighthouse-returning .ground-forest {
+        transition: transform 1300ms cubic-bezier(0.2, 0.72, 0.12, 1);
+      }
+
+      .dome.is-lighthouse-returning .camp-scene,
+      .dome.is-lighthouse-returning .fire-reflection {
+        transition:
+          opacity 700ms ease,
+          transform 1200ms cubic-bezier(0.2, 0.72, 0.12, 1);
+      }
+
+      .dome.is-lighthouse-returning .ridge-lighthouse {
+        transition:
+          opacity 1200ms ease,
+          filter 1200ms ease;
+      }
+
       .camp-item {
         position: absolute;
         display: block;
@@ -2010,6 +2064,8 @@ const planets = [
       let isAddingCampfireWood = false;
       let isDraggingCampfireWood = false;
       let lighthouseTimer = 0;
+      let lighthouseEntryTimer = 0;
+      let lighthouseReturnTimer = 0;
 
       const getCampfireSnapshot = (state = {}) => {
         const now = Date.now();
@@ -2226,14 +2282,36 @@ const planets = [
 
       const closeLighthouseEntry = () => {
         window.clearTimeout(lighthouseTimer);
+        window.clearTimeout(lighthouseEntryTimer);
+        window.clearTimeout(lighthouseReturnTimer);
         lighthouseTimer = 0;
-        dome?.classList.remove("is-lighthouse-focus");
-        document.body.classList.remove("is-lighthouse-focus");
+
         if (lighthouseEntry) {
           lighthouseEntry.classList.remove("is-visible");
-          lighthouseEntry.hidden = true;
+          lighthouseEntryTimer = window.setTimeout(() => {
+            lighthouseEntry.hidden = true;
+          }, 430);
         }
-        requestCampPerspective();
+
+        if (!dome?.classList.contains("is-lighthouse-focus")) {
+          document.body.classList.remove("is-lighthouse-focus", "is-lighthouse-returning");
+          dome?.classList.remove("is-lighthouse-returning");
+          return;
+        }
+
+        dome.classList.add("is-lighthouse-returning");
+        document.body.classList.add("is-lighthouse-returning");
+
+        window.requestAnimationFrame(() => {
+          dome.classList.remove("is-lighthouse-focus");
+          document.body.classList.remove("is-lighthouse-focus");
+          requestCampPerspective();
+        });
+
+        lighthouseReturnTimer = window.setTimeout(() => {
+          dome.classList.remove("is-lighthouse-returning");
+          document.body.classList.remove("is-lighthouse-returning");
+        }, 1950);
       };
 
       const openLighthouseEntry = () => {
@@ -2242,6 +2320,10 @@ const planets = [
         closeCampDialogue();
         hideCard();
         campItems.forEach((item) => item.classList.remove("is-camp-active", "is-camp-hovered"));
+        window.clearTimeout(lighthouseEntryTimer);
+        window.clearTimeout(lighthouseReturnTimer);
+        dome.classList.remove("is-lighthouse-returning");
+        document.body.classList.remove("is-lighthouse-returning");
         lighthouseEntry.hidden = false;
         lighthouseEntry.classList.remove("is-visible");
         dome.classList.add("is-lighthouse-focus");
