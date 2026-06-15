@@ -254,7 +254,9 @@ const planets = [
         height: 136%;
         transform: translate(-50%, -50%) scale(var(--planet-depth));
         transform-origin: 50% 50%;
-        transition: transform 80ms linear;
+        transition:
+          opacity 900ms ease,
+          transform 80ms linear;
       }
 
       .planet {
@@ -455,6 +457,7 @@ const planets = [
         height: auto;
         opacity: 0.78;
         filter: drop-shadow(0 0 14px rgba(255, 236, 188, 0.26));
+        pointer-events: auto;
         transform: translateX(-50%);
         transform-origin: 50% 62%;
         user-select: none;
@@ -483,6 +486,7 @@ const planets = [
         height: 71vh;
         opacity: 0.9;
         transform: translate3d(0, calc(var(--ridge-middle-lift) * -1), 0);
+        transform-origin: 27% 47%;
         transition: transform 80ms linear;
       }
 
@@ -533,6 +537,83 @@ const planets = [
         pointer-events: auto;
         transform: translate3d(-50%, calc(var(--scene-start-offset) - var(--camp-lift)), 0);
         transition: transform 80ms linear;
+      }
+
+      body.is-lighthouse-focus .camp-dialog,
+      .dome.is-lighthouse-focus .intro,
+      .dome.is-lighthouse-focus .footer,
+      .dome.is-lighthouse-focus .info-card {
+        opacity: 0;
+        pointer-events: none;
+      }
+
+      .dome.is-lighthouse-focus .planet,
+      .dome.is-lighthouse-focus .camp-item:not(.ridge-lighthouse) {
+        pointer-events: none;
+      }
+
+      .dome.is-lighthouse-focus .orbit-field {
+        opacity: 0.26;
+        transform: translate(-50%, -54%) scale(0.76);
+        transition:
+          opacity 1200ms ease,
+          transform 1800ms cubic-bezier(0.2, 0.72, 0.12, 1);
+      }
+
+      .dome.is-lighthouse-focus .landscape-layers {
+        transform: translate3d(0, 0, 0);
+        transition: transform 1800ms cubic-bezier(0.2, 0.72, 0.12, 1);
+      }
+
+      .dome.is-lighthouse-focus .ridge-far {
+        opacity: 0.56;
+        transform: translate3d(7vw, -8vh, 0) scale(1.12);
+        transition:
+          opacity 1500ms ease,
+          transform 1800ms cubic-bezier(0.2, 0.72, 0.12, 1);
+      }
+
+      .dome.is-lighthouse-focus .ridge-middle {
+        opacity: 1;
+        transform: translate3d(23vw, -11vh, 0) scale(2.75);
+        transition:
+          opacity 1200ms ease,
+          transform 1900ms cubic-bezier(0.2, 0.72, 0.12, 1);
+      }
+
+      .dome.is-lighthouse-focus .forest-far {
+        transform: translate3d(0, 76vh, 0) scale(1.08);
+        transition: transform 1700ms cubic-bezier(0.2, 0.72, 0.12, 1);
+      }
+
+      .dome.is-lighthouse-focus .horizon {
+        transform: translate3d(0, 94vh, 0);
+        transition: transform 1500ms cubic-bezier(0.2, 0.72, 0.12, 1);
+      }
+
+      .dome.is-lighthouse-focus .ground-forest {
+        transform: translate3d(-50%, 112vh, 0);
+        transition: transform 1300ms cubic-bezier(0.2, 0.72, 0.12, 1);
+      }
+
+      .dome.is-lighthouse-focus .camp-scene {
+        transform: translate3d(-50%, 126vh, 0);
+        transition: transform 1200ms cubic-bezier(0.2, 0.72, 0.12, 1);
+      }
+
+      .dome.is-lighthouse-focus .fire-reflection {
+        opacity: 0;
+        transform: translate3d(-50%, 120vh, 0);
+        transition:
+          opacity 700ms ease,
+          transform 1200ms cubic-bezier(0.2, 0.72, 0.12, 1);
+      }
+
+      .dome.is-lighthouse-focus .ridge-lighthouse {
+        opacity: 1;
+        filter:
+          drop-shadow(0 0 18px rgba(255, 244, 192, 0.34))
+          drop-shadow(0 0 42px rgba(255, 244, 192, 0.16));
       }
 
       .camp-item {
@@ -981,6 +1062,101 @@ const planets = [
         outline: none;
       }
 
+      .lighthouse-entry {
+        position: fixed;
+        right: 24px;
+        bottom: 28px;
+        left: 24px;
+        z-index: 19;
+        display: flex;
+        justify-content: center;
+        opacity: 0;
+        pointer-events: none;
+        transform: translate3d(0, 12px, 0);
+        transition:
+          opacity 420ms ease,
+          transform 420ms ease;
+      }
+
+      .lighthouse-entry[hidden] {
+        display: none;
+      }
+
+      .lighthouse-entry.is-visible {
+        opacity: 1;
+        pointer-events: auto;
+        transform: translate3d(0, 0, 0);
+      }
+
+      .lighthouse-entry-panel {
+        width: min(390px, 100%);
+        padding: 18px;
+        border: 1px solid rgba(255, 244, 192, 0.2);
+        border-radius: 8px;
+        background:
+          radial-gradient(ellipse at 50% 0%, rgba(255, 244, 192, 0.14), transparent 48%),
+          linear-gradient(180deg, rgba(17, 27, 44, 0.96), rgba(5, 9, 18, 0.98));
+        box-shadow:
+          0 22px 70px rgba(0, 0, 0, 0.44),
+          inset 0 1px 0 rgba(255, 255, 255, 0.06);
+        text-align: center;
+      }
+
+      .lighthouse-entry-title {
+        margin: 0 0 6px;
+        color: rgba(255, 250, 224, 0.94);
+        font-size: 18px;
+        font-weight: 850;
+      }
+
+      .lighthouse-entry-copy {
+        margin: 0 0 16px;
+        color: rgba(232, 238, 249, 0.62);
+        font-size: 13px;
+        line-height: 1.55;
+      }
+
+      .lighthouse-entry-actions {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
+
+      .lighthouse-entry-link,
+      .lighthouse-entry-cancel {
+        display: inline-flex;
+        min-height: 40px;
+        align-items: center;
+        justify-content: center;
+        border-radius: 8px;
+        font: inherit;
+        font-size: 13px;
+        font-weight: 800;
+        text-decoration: none;
+      }
+
+      .lighthouse-entry-link {
+        border: 0;
+        background: linear-gradient(180deg, #fff0b9, #f7bf59);
+        color: #1d1507;
+        box-shadow: 0 10px 26px rgba(247, 191, 89, 0.2);
+      }
+
+      .lighthouse-entry-cancel {
+        border: 1px solid rgba(232, 238, 249, 0.16);
+        background: rgba(255, 255, 255, 0.04);
+        color: rgba(232, 238, 249, 0.72);
+        cursor: pointer;
+      }
+
+      .lighthouse-entry-link:hover,
+      .lighthouse-entry-link:focus-visible,
+      .lighthouse-entry-cancel:hover,
+      .lighthouse-entry-cancel:focus-visible {
+        filter: brightness(1.06);
+        outline: none;
+      }
+
       .fire-sparks {
         position: absolute;
         left: 63.5%;
@@ -1392,7 +1568,7 @@ const planets = [
             <p class="info-desc" data-info-description></p>
           </aside>
 
-          <div class="landscape-layers" aria-hidden="true">
+          <div class="landscape-layers">
             <div class="landscape-layer ridge-far">
               <svg viewBox="0 0 1200 260" preserveAspectRatio="none" focusable="false">
                 <path
@@ -1633,6 +1809,17 @@ const planets = [
       </div>
     </div>
 
+    <div class="lighthouse-entry" data-lighthouse-entry hidden aria-live="polite">
+      <div class="lighthouse-entry-panel">
+        <h2 class="lighthouse-entry-title">Lighthouse</h2>
+        <p class="lighthouse-entry-copy">What's in this lighthouse?</p>
+        <div class="lighthouse-entry-actions">
+          <a class="lighthouse-entry-link" href="/lighthouse" data-lighthouse-enter>Enter Lighthouse</a>
+          <button class="lighthouse-entry-cancel" type="button" data-lighthouse-cancel>Stay Outside</button>
+        </div>
+      </div>
+    </div>
+
     <script>
       if ("scrollRestoration" in history) {
         history.scrollRestoration = "manual";
@@ -1767,8 +1954,12 @@ const planets = [
       const campDialogClose = document.querySelector("[data-camp-dialog-close]");
       const campDialogSpeaker = document.querySelector("[data-camp-dialog-speaker]");
       const campDialogLine = document.querySelector("[data-camp-dialog-line]");
+      const lighthouseEntry = document.querySelector("[data-lighthouse-entry]");
+      const lighthouseEnter = document.querySelector("[data-lighthouse-enter]");
+      const lighthouseCancel = document.querySelector("[data-lighthouse-cancel]");
       let campfireSource = "api";
       let isCampfireExtinguished = false;
+      let lighthouseTimer = 0;
 
       const getCampfireSnapshot = (state = {}) => {
         const now = Date.now();
@@ -1929,8 +2120,47 @@ const planets = [
         if (campfireModal) campfireModal.hidden = true;
       };
 
+      const closeLighthouseEntry = () => {
+        window.clearTimeout(lighthouseTimer);
+        lighthouseTimer = 0;
+        dome?.classList.remove("is-lighthouse-focus");
+        document.body.classList.remove("is-lighthouse-focus");
+        if (lighthouseEntry) {
+          lighthouseEntry.classList.remove("is-visible");
+          lighthouseEntry.hidden = true;
+        }
+        requestCampPerspective();
+      };
+
+      const openLighthouseEntry = () => {
+        if (!dome || !lighthouseEntry) return;
+        closeCampfire();
+        closeCampDialogue();
+        hideCard();
+        campItems.forEach((item) => item.classList.remove("is-camp-active", "is-camp-hovered"));
+        lighthouseEntry.hidden = false;
+        lighthouseEntry.classList.remove("is-visible");
+        dome.classList.add("is-lighthouse-focus");
+        document.body.classList.add("is-lighthouse-focus");
+        window.clearTimeout(lighthouseTimer);
+        window.scrollTo({ top: 0, behavior: "smooth" });
+        lighthouseTimer = window.setTimeout(() => {
+          lighthouseEntry.classList.add("is-visible");
+          lighthouseEnter?.focus();
+        }, 1850);
+      };
+
       window.addEventListener("camp:click", (event) => {
         const id = event.detail?.id;
+        if (id === "lighthouse") {
+          openLighthouseEntry();
+          return;
+        }
+
+        if (dome?.classList.contains("is-lighthouse-focus")) {
+          return;
+        }
+
         if (id === "fire") {
           closeCampDialogue();
           openCampfire();
@@ -1949,6 +2179,7 @@ const planets = [
       campfireExtinguish?.addEventListener("click", extinguishCampfire);
       campfireClose?.addEventListener("click", closeCampfire);
       campDialogClose?.addEventListener("click", closeCampDialogue);
+      lighthouseCancel?.addEventListener("click", closeLighthouseEntry);
       campfireModal?.addEventListener("click", (event) => {
         if (event.target === campfireModal) closeCampfire();
       });
@@ -1956,6 +2187,7 @@ const planets = [
         if (event.key === "Escape") {
           closeCampfire();
           closeCampDialogue();
+          closeLighthouseEntry();
         }
       });
 
