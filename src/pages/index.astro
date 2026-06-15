@@ -449,16 +449,14 @@ const planets = [
       }
 
       .ridge-lighthouse {
-        position: absolute;
-        left: 27%;
-        bottom: 47.3%;
-        z-index: 2;
-        width: clamp(44px, 6.6vw, 108px);
-        height: auto;
+        position: relative;
+        display: block;
+        width: 100%;
+        height: 100%;
         opacity: 0.78;
         filter: drop-shadow(0 0 14px rgba(255, 236, 188, 0.26));
         pointer-events: auto;
-        transform: translateX(-50%);
+        transform: none;
         transform-origin: 50% 62%;
         user-select: none;
       }
@@ -488,6 +486,17 @@ const planets = [
         transform: translate3d(0, calc(var(--ridge-middle-lift) * -1), 0);
         transform-origin: 27% 47%;
         transition: transform 80ms linear;
+      }
+
+      .ridge-middle-frame {
+        position: relative;
+        width: 100%;
+        height: 100%;
+      }
+
+      .ridge-lighthouse-object {
+        overflow: visible;
+        pointer-events: auto;
       }
 
       .forest-far {
@@ -635,6 +644,10 @@ const planets = [
           opacity 180ms ease,
           filter 180ms ease;
         appearance: none;
+      }
+
+      .ridge-lighthouse-object .camp-item {
+        position: relative;
       }
 
       .camp-visual {
@@ -1584,26 +1597,31 @@ const planets = [
             </div>
 
             <div class="landscape-layer ridge-middle">
-              <svg viewBox="0 0 1200 300" preserveAspectRatio="none" focusable="false">
-                <path
-                  d="M0 154 L78 130 L162 168 L262 96 L344 142 L438 86 L548 158 L640 112 L736 176 L840 104 L938 148 L1036 116 L1200 170 L1200 300 L0 300 Z"
-                  fill="#253247"
-                />
-                <path
-                  d="M0 194 L108 160 L228 206 L342 132 L474 190 L610 144 L744 206 L876 150 L1016 196 L1200 162 L1200 300 L0 300 Z"
-                  fill="#18243a"
-                  opacity="1"
-                />
-              </svg>
-              <button
-                class="camp-item ridge-lighthouse"
-                type="button"
-                data-camp-item="lighthouse"
-                data-camp-label="Lighthouse"
-                aria-label="Interact with the lighthouse"
-              >
-                <img class="camp-visual" src="/camp/lighthouse.png" alt="" width="1265" height="1205" loading="eager" decoding="async" draggable="false" />
-              </button>
+              <div class="ridge-middle-frame">
+                <svg viewBox="0 0 1200 300" preserveAspectRatio="none" focusable="false">
+                  <path
+                    d="M0 154 L78 130 L162 168 L262 96 L344 142 L438 86 L548 158 L640 112 L736 176 L840 104 L938 148 L1036 116 L1200 170 L1200 300 L0 300 Z"
+                    fill="#253247"
+                  />
+                  <path
+                    d="M0 194 L108 160 L228 206 L342 132 L474 190 L610 144 L744 206 L876 150 L1016 196 L1200 162 L1200 300 L0 300 Z"
+                    fill="#18243a"
+                    opacity="1"
+                  />
+                  <foreignObject class="ridge-lighthouse-object" x="315" y="210" width="86" height="82">
+                    <button
+                      xmlns="http://www.w3.org/1999/xhtml"
+                      class="camp-item ridge-lighthouse"
+                      type="button"
+                      data-camp-item="lighthouse"
+                      data-camp-label="Lighthouse"
+                      aria-label="Interact with the lighthouse"
+                    >
+                      <img class="camp-visual" src="/camp/lighthouse.png" alt="" width="1265" height="1205" loading="eager" decoding="async" draggable="false" />
+                    </button>
+                  </foreignObject>
+                </svg>
+              </div>
             </div>
 
             <div class="landscape-layer forest-far">
