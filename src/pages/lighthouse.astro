@@ -36,14 +36,22 @@ const title = "Lighthouse";
         background: #050913;
       }
 
+      .scene-frame {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        z-index: 0;
+        width: max(100vw, calc(100vh * 1672 / 941));
+        height: max(100vh, calc(100vw * 941 / 1672));
+        transform: translate(-50%, -50%);
+        transform-origin: 50% 50%;
+      }
+
       .lighthouse-scene {
         position: absolute;
         inset: 0;
-        z-index: 0;
         width: 100%;
         height: 100%;
-        object-fit: cover;
-        object-position: 50% 50%;
         user-select: none;
       }
 
@@ -155,8 +163,8 @@ const title = "Lighthouse";
 
       .lighthouse-cat {
         left: 59.7%;
-        top: 2%;
-        width: clamp(34px, 4.2vw, 72px);
+        top: 3.5%;
+        width: 4.2%;
         opacity: 0.92;
         filter: drop-shadow(0 0 10px rgba(255, 228, 148, 0.12));
         transform: rotate(-4deg);
@@ -176,8 +184,8 @@ const title = "Lighthouse";
         left: 16.3%;
         top: 66%;
         z-index: 2;
-        width: clamp(180px, 27vw, 430px);
-        height: clamp(140px, 21vw, 330px);
+        width: 25.7%;
+        height: 35.1%;
         border-radius: 50%;
         background:
           radial-gradient(ellipse at 39% 35%, rgba(255, 237, 148, 0.76), transparent 14%),
@@ -301,23 +309,6 @@ const title = "Lighthouse";
           left: 16px;
         }
 
-        .lighthouse-scene {
-          object-position: 54% 50%;
-        }
-
-        .lantern-glow {
-          left: 9.6%;
-          top: 62%;
-          width: clamp(160px, 42vw, 260px);
-          height: clamp(120px, 34vw, 210px);
-        }
-
-        .lighthouse-cat {
-          left: 58%;
-          top: 15%;
-          width: clamp(28px, 9vw, 48px);
-        }
-
         .lighthouse-caption {
           right: 16px;
           bottom: 16px;
@@ -340,26 +331,28 @@ const title = "Lighthouse";
       </div>
     </div>
     <main class="lighthouse-space" aria-label="Inside the lighthouse">
-      <img
-        class="lighthouse-scene"
-        data-preload-src="/camp/lighthouse_scene.png"
-        alt=""
-        width="1672"
-        height="941"
-        loading="eager"
-        decoding="async"
-        draggable="false"
-      />
-      <div class="lantern-glow" aria-hidden="true"></div>
-      <button
-        class="lighthouse-item lighthouse-cat"
-        type="button"
-        data-lighthouse-item="cat"
-        data-lighthouse-label="Cat"
-        aria-label="Interact with the cat"
-      >
-        <img data-preload-src="/camp/cat.png" alt="" width="568" height="586" loading="eager" decoding="async" draggable="false" />
-      </button>
+      <div class="scene-frame">
+        <img
+          class="lighthouse-scene"
+          data-preload-src="/camp/lighthouse_scene.png"
+          alt=""
+          width="1672"
+          height="941"
+          loading="eager"
+          decoding="async"
+          draggable="false"
+        />
+        <div class="lantern-glow" aria-hidden="true"></div>
+        <button
+          class="lighthouse-item lighthouse-cat"
+          type="button"
+          data-lighthouse-item="cat"
+          data-lighthouse-label="Cat"
+          aria-label="Interact with the cat"
+        >
+          <img data-preload-src="/camp/cat.png" alt="" width="568" height="586" loading="eager" decoding="async" draggable="false" />
+        </button>
+      </div>
       <div class="lighthouse-bar">
         <h1 class="lighthouse-title">{title}</h1>
         <a class="return-link" href="/">Return Outside</a>
