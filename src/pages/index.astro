@@ -834,7 +834,7 @@ const planets = [
         border: 1px solid rgba(255, 202, 121, 0.2);
         border-radius: 8px;
         background:
-          radial-gradient(ellipse at 50% 32%, rgba(255, 139, 45, 0.18), transparent 36%),
+          radial-gradient(ellipse at 32% 32%, rgba(255, 139, 45, 0.18), transparent 36%),
           linear-gradient(180deg, rgba(16, 23, 39, 0.96), rgba(5, 9, 18, 0.98));
         box-shadow:
           0 28px 80px rgba(0, 0, 0, 0.48),
@@ -863,23 +863,32 @@ const planets = [
         outline: none;
       }
 
+      .campfire-stage {
+        position: relative;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(96px, 0.72fr);
+        align-items: end;
+        gap: 18px;
+        min-height: 176px;
+        margin-bottom: 8px;
+      }
+
       .campfire-visual {
         position: relative;
         display: grid;
-        height: 164px;
+        min-height: 164px;
         place-items: center;
-        margin-bottom: 8px;
-        pointer-events: none;
       }
 
       .campfire-visual::before {
         position: absolute;
-        width: 178px;
-        height: 96px;
+        width: 150px;
+        height: 180px;
         border-radius: 50%;
         background: radial-gradient(ellipse at 50% 50%, rgba(255, 139, 45, 0.2), transparent 68%);
         filter: blur(14px);
         content: "";
+        transform: translate(0, 10px);
       }
 
       .campfire-visual img {
@@ -898,6 +907,55 @@ const planets = [
         mix-blend-mode: normal;
         opacity: 0.86;
         filter: brightness(0.88) saturate(0.78);
+      }
+
+      .campfire-wood-stack {
+        position: relative;
+        display: grid;
+        place-items: end center;
+        min-height: 126px;
+        border: 0;
+        background: transparent;
+        cursor: grab;
+        touch-action: none;
+      }
+
+      .campfire-wood-stack:focus-visible {
+        outline: 1px solid rgba(255, 202, 121, 0.58);
+        outline-offset: 4px;
+      }
+
+      .campfire-wood-stack:disabled,
+      .campfire-wood-stack[aria-disabled="true"] {
+        cursor: not-allowed;
+        opacity: 0.46;
+      }
+
+      .campfire-wood-stack img {
+        width: min(112px, 27vw);
+        height: auto;
+        filter: drop-shadow(0 14px 18px rgba(0, 0, 0, 0.32));
+        user-select: none;
+        -webkit-user-drag: none;
+      }
+
+      .campfire-drag-log {
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 30;
+        width: 118px;
+        height: auto;
+        opacity: 0;
+        pointer-events: none;
+        transform: translate3d(-999px, -999px, 0) rotate(-8deg);
+        filter: drop-shadow(0 16px 18px rgba(0, 0, 0, 0.42));
+        transition: opacity 120ms ease;
+        user-select: none;
+      }
+
+      .campfire-drag-log.is-visible {
+        opacity: 0.94;
       }
 
       .campfire-title {
@@ -945,31 +1003,6 @@ const planets = [
         background: linear-gradient(90deg, #f97316, #facc15);
         box-shadow: 0 0 18px rgba(255, 161, 54, 0.42);
         transition: width 220ms ease;
-      }
-
-      .campfire-action {
-        width: 100%;
-        min-height: 44px;
-        border: 0;
-        border-radius: 8px;
-        background: linear-gradient(180deg, #ffd27a, #ff8a2a);
-        color: #1f1208;
-        cursor: pointer;
-        font: inherit;
-        font-size: 14px;
-        font-weight: 800;
-        box-shadow: 0 10px 26px rgba(255, 122, 24, 0.26);
-      }
-
-      .campfire-action:hover:not(:disabled),
-      .campfire-action:focus-visible:not(:disabled) {
-        filter: brightness(1.06);
-        outline: none;
-      }
-
-      .campfire-action:disabled {
-        cursor: not-allowed;
-        filter: grayscale(0.45) brightness(0.72);
       }
 
       .campfire-secondary-action {
@@ -1798,8 +1831,14 @@ const planets = [
     <div class="campfire-modal" data-campfire-modal hidden role="dialog" aria-modal="true" aria-labelledby="campfire-title">
       <div class="campfire-panel">
         <button class="campfire-close" type="button" data-campfire-close aria-label="Close campfire">×</button>
-        <div class="campfire-visual" aria-hidden="true">
-          <img src="/camp/fire.gif" alt="" loading="lazy" decoding="async" draggable="false" />
+        <div class="campfire-stage">
+          <div class="campfire-visual" data-campfire-drop aria-label="Drop a log into the campfire">
+            <img src="/camp/fire.gif" alt="" loading="lazy" decoding="async" draggable="false" />
+          </div>
+          <button class="campfire-wood-stack" type="button" data-campfire-wood-stack aria-label="Drag a log into the campfire">
+            <img src="/camp/wood_stack.png" alt="" loading="lazy" decoding="async" draggable="false" />
+          </button>
+          <img class="campfire-drag-log" data-campfire-drag-log src="/camp/wood_single.png" alt="" draggable="false" />
         </div>
         <h2 class="campfire-title" id="campfire-title">Campfire</h2>
         <p class="campfire-copy" data-campfire-copy>Checking the fire...</p>
@@ -1812,7 +1851,7 @@ const planets = [
             <div class="campfire-fill" data-campfire-fill></div>
           </div>
         </div>
-        <button class="campfire-action" type="button" data-campfire-add>Add one log</button>
+        <button type="button" data-campfire-add hidden>Add one log</button>
         <button class="campfire-secondary-action" type="button" data-campfire-extinguish>Extinguish fire</button>
         <p class="campfire-status" data-campfire-status aria-live="polite"></p>
       </div>
@@ -1944,6 +1983,7 @@ const planets = [
       const CAMP_WOOD_SRC = "/camp/wood.png";
       const CAMP_FIRE_SRC = "/camp/fire.gif";
       const CAMP_SMOKE_SRC = "/camp/smoke.gif";
+      const CAMP_WOOD_SINGLE_SRC = "/camp/wood_single.png";
       const CAMP_DOG_SRC = "/camp/dog.png";
       const CAMP_DOG_SLEEP_SRC = "/camp/dog_sleep.png";
       const EXTINGUISHED_DIALOGUE = {
@@ -1964,6 +2004,9 @@ const planets = [
       const campfireWood = document.querySelector("[data-campfire-wood]");
       const campfireFill = document.querySelector("[data-campfire-fill]");
       const campfireStatus = document.querySelector("[data-campfire-status]");
+      const campfireDrop = document.querySelector("[data-campfire-drop]");
+      const campfireWoodStack = document.querySelector("[data-campfire-wood-stack]");
+      const campfireDragLog = document.querySelector("[data-campfire-drag-log]");
       const campWoodImage = document.querySelector(".camp-wood");
       const campfireVisualImage = document.querySelector(".campfire-visual img");
       const campDogImage = document.querySelector(".camp-dog .camp-visual");
@@ -1976,6 +2019,9 @@ const planets = [
       const lighthouseCancel = document.querySelector("[data-lighthouse-cancel]");
       let campfireSource = "api";
       let isCampfireExtinguished = false;
+      let campfireState = { burnUntil: 0 };
+      let isAddingCampfireWood = false;
+      let isDraggingCampfireWood = false;
       let lighthouseTimer = 0;
 
       const getCampfireSnapshot = (state = {}) => {
@@ -1992,12 +2038,11 @@ const planets = [
       };
 
       const formatRemaining = (remainingMs) => {
-        if (remainingMs <= 0) return "The fire is waiting for its first log.";
-        const days = Math.floor(remainingMs / DAY_MS);
-        const hours = Math.ceil((remainingMs % DAY_MS) / (60 * 60 * 1000));
-        if (days <= 0) return `${hours} hour${hours === 1 ? "" : "s"} of warmth left.`;
-        if (hours >= 24) return `${days + 1} day${days + 1 === 1 ? "" : "s"} of warmth left.`;
-        return `${days} day${days === 1 ? "" : "s"} ${hours} hour${hours === 1 ? "" : "s"} of warmth left.`;
+        const totalMinutes = Math.max(0, Math.ceil(remainingMs / (60 * 1000)));
+        const days = Math.floor(totalMinutes / (24 * 60));
+        const hours = Math.floor((totalMinutes - days * 24 * 60) / 60);
+        const minutes = totalMinutes - days * 24 * 60 - hours * 60;
+        return `${days} d ${hours} h ${minutes} m`;
       };
 
       const readLocalCampfire = () => {
@@ -2035,14 +2080,24 @@ const planets = [
       };
 
       const renderCampfire = (state, status = "") => {
+        campfireState = { burnUntil: Number.isFinite(state?.burnUntil) ? state.burnUntil : 0 };
         const snapshot = getCampfireSnapshot(state);
         applyCampfireScene(snapshot);
         if (campfireCopy) campfireCopy.textContent = formatRemaining(snapshot.remainingMs);
         if (campfireWood) campfireWood.textContent = `${snapshot.woodCount} log${snapshot.woodCount === 1 ? "" : "s"}`;
         if (campfireFill) campfireFill.style.setProperty("--campfire-level", `${Math.round((snapshot.woodCount / MAX_WOOD) * 100)}`);
         if (campfireAdd) {
-          campfireAdd.disabled = snapshot.isFull;
+          campfireAdd.disabled = snapshot.isFull || isAddingCampfireWood;
           campfireAdd.textContent = snapshot.isFull ? "The fire is full" : "Add one log";
+        }
+        if (campfireWoodStack) {
+          const isDisabled = snapshot.isFull || isAddingCampfireWood;
+          campfireWoodStack.disabled = isDisabled;
+          campfireWoodStack.setAttribute("aria-disabled", String(isDisabled));
+          campfireWoodStack.setAttribute(
+            "aria-label",
+            snapshot.isFull ? "The campfire already has thirty logs" : "Drag a log into the campfire",
+          );
         }
         if (campfireExtinguish) {
           campfireExtinguish.disabled = snapshot.woodCount === 0 && snapshot.remainingMs <= 0;
@@ -2066,9 +2121,17 @@ const planets = [
         }
       };
 
+      const refreshCampfireClock = () => {
+        if (!campfireModal || campfireModal.hidden) return;
+        renderCampfire(campfireState, campfireStatus?.textContent || "");
+      };
+
       const addCampfireWood = async () => {
-        if (!campfireAdd) return;
-        campfireAdd.disabled = true;
+        const currentSnapshot = getCampfireSnapshot(campfireState);
+        if (isAddingCampfireWood || currentSnapshot.isFull) return;
+        isAddingCampfireWood = true;
+        if (campfireAdd) campfireAdd.disabled = true;
+        if (campfireWoodStack) campfireWoodStack.disabled = true;
         if (campfireStatus) campfireStatus.textContent = "Adding a log...";
 
         if (campfireSource === "local") {
@@ -2076,6 +2139,7 @@ const planets = [
           const base = Math.max(Date.now(), current.burnUntil);
           const next = getCampfireSnapshot({ burnUntil: Math.min(Date.now() + MAX_WOOD * DAY_MS, base + DAY_MS) });
           writeLocalCampfire(next);
+          isAddingCampfireWood = false;
           renderCampfire(next, "Saved in this browser for local preview.");
           return;
         }
@@ -2087,6 +2151,7 @@ const planets = [
           });
           const state = await response.json();
           if (!response.ok) throw new Error(state.error || "Could not add wood");
+          isAddingCampfireWood = false;
           renderCampfire(state, "One log added.");
         } catch {
           campfireSource = "local";
@@ -2094,8 +2159,43 @@ const planets = [
           const base = Math.max(Date.now(), current.burnUntil);
           const next = getCampfireSnapshot({ burnUntil: Math.min(Date.now() + MAX_WOOD * DAY_MS, base + DAY_MS) });
           writeLocalCampfire(next);
+          isAddingCampfireWood = false;
           renderCampfire(next, "Using local preview until the Cloudflare KV binding is ready.");
         }
+      };
+
+      const moveCampfireDragLog = (clientX, clientY) => {
+        if (!campfireDragLog) return;
+        campfireDragLog.style.transform = `translate3d(${clientX - 58}px, ${clientY - 34}px, 0) rotate(-8deg)`;
+      };
+
+      const isPointInsideCampfireDrop = (clientX, clientY) => {
+        if (!campfireDrop) return false;
+        const rect = campfireDrop.getBoundingClientRect();
+        return clientX >= rect.left && clientX <= rect.right && clientY >= rect.top && clientY <= rect.bottom;
+      };
+
+      const endCampfireWoodDrag = (event) => {
+        if (!isDraggingCampfireWood) return;
+        isDraggingCampfireWood = false;
+        campfireDragLog?.classList.remove("is-visible");
+        if (campfireWoodStack?.hasPointerCapture?.(event.pointerId)) {
+          campfireWoodStack.releasePointerCapture(event.pointerId);
+        }
+        if (isPointInsideCampfireDrop(event.clientX, event.clientY)) {
+          addCampfireWood();
+        }
+      };
+
+      const startCampfireWoodDrag = (event) => {
+        const snapshot = getCampfireSnapshot(campfireState);
+        if (snapshot.isFull || isAddingCampfireWood || !campfireDragLog) return;
+        event.preventDefault();
+        isDraggingCampfireWood = true;
+        campfireDragLog.src = CAMP_WOOD_SINGLE_SRC;
+        campfireWoodStack?.setPointerCapture?.(event.pointerId);
+        moveCampfireDragLog(event.clientX, event.clientY);
+        campfireDragLog.classList.add("is-visible");
       };
 
       const extinguishCampfire = async () => {
@@ -2130,7 +2230,7 @@ const planets = [
         if (!campfireModal) return;
         campfireModal.hidden = false;
         fetchCampfire();
-        campfireAdd?.focus();
+        campfireWoodStack?.focus();
       };
 
       const closeCampfire = () => {
@@ -2193,6 +2293,13 @@ const planets = [
       });
 
       campfireAdd?.addEventListener("click", addCampfireWood);
+      campfireWoodStack?.addEventListener("pointerdown", startCampfireWoodDrag);
+      campfireWoodStack?.addEventListener("pointermove", (event) => {
+        if (!isDraggingCampfireWood) return;
+        moveCampfireDragLog(event.clientX, event.clientY);
+      });
+      campfireWoodStack?.addEventListener("pointerup", endCampfireWoodDrag);
+      campfireWoodStack?.addEventListener("pointercancel", endCampfireWoodDrag);
       campfireExtinguish?.addEventListener("click", extinguishCampfire);
       campfireClose?.addEventListener("click", closeCampfire);
       campDialogClose?.addEventListener("click", closeCampDialogue);
@@ -2209,6 +2316,7 @@ const planets = [
       });
 
       fetchCampfire();
+      window.setInterval(refreshCampfireClock, 60 * 1000);
 
       const updateCampPerspective = () => {
         if (!dome) return;
