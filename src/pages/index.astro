@@ -1099,18 +1099,15 @@ const planets = [
 
       .lighthouse-entry {
         position: fixed;
-        right: 24px;
-        bottom: 28px;
-        left: 24px;
+        inset: 0;
         z-index: 19;
-        display: flex;
-        justify-content: center;
+        display: grid;
+        place-items: center;
+        padding: 24px;
         opacity: 0;
         pointer-events: none;
-        transform: translate3d(0, 12px, 0);
         transition:
-          opacity 420ms ease,
-          transform 420ms ease;
+          opacity 420ms ease;
       }
 
       .lighthouse-entry[hidden] {
@@ -1120,11 +1117,10 @@ const planets = [
       .lighthouse-entry.is-visible {
         opacity: 1;
         pointer-events: auto;
-        transform: translate3d(0, 0, 0);
       }
 
       .lighthouse-entry-panel {
-        width: min(390px, 100%);
+        width: min(390px, calc(100vw - 48px));
         padding: 18px;
         border: 1px solid rgba(255, 244, 192, 0.2);
         border-radius: 8px;
@@ -1135,6 +1131,12 @@ const planets = [
           0 22px 70px rgba(0, 0, 0, 0.44),
           inset 0 1px 0 rgba(255, 255, 255, 0.06);
         text-align: center;
+        transform: translate3d(0, 10px, 0) scale(0.98);
+        transition: transform 420ms ease;
+      }
+
+      .lighthouse-entry.is-visible .lighthouse-entry-panel {
+        transform: translate3d(0, 0, 0) scale(1);
       }
 
       .lighthouse-entry-title {
@@ -1845,8 +1847,8 @@ const planets = [
 
     <div class="lighthouse-entry" data-lighthouse-entry hidden aria-live="polite">
       <div class="lighthouse-entry-panel">
-        <h2 class="lighthouse-entry-title">Lighthouse</h2>
-        <p class="lighthouse-entry-copy">What's in this lighthouse?</p>
+        <h2 class="lighthouse-entry-title">The Lighthouse</h2>
+        <p class="lighthouse-entry-copy">What's in it?</p>
         <div class="lighthouse-entry-actions">
           <a class="lighthouse-entry-link" href="/lighthouse" data-lighthouse-enter>Enter Lighthouse</a>
           <button class="lighthouse-entry-cancel" type="button" data-lighthouse-cancel>Stay Outside</button>
