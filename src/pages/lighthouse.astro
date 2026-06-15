@@ -58,6 +58,84 @@ const title = "Lighthouse";
         content: "";
       }
 
+      .lighthouse-loader {
+        --loader-progress: 0;
+        position: fixed;
+        inset: 0;
+        z-index: 20;
+        display: grid;
+        place-items: center;
+        background:
+          radial-gradient(ellipse at 50% 38%, rgba(255, 222, 139, 0.13), transparent 30%),
+          linear-gradient(180deg, #050913, #02050b);
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
+        transition:
+          opacity 420ms ease,
+          visibility 420ms ease;
+      }
+
+      .lighthouse-loader.is-complete {
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+      }
+
+      .lighthouse-loader-panel {
+        width: min(360px, calc(100vw - 48px));
+      }
+
+      .lighthouse-loader-title {
+        display: flex;
+        justify-content: space-between;
+        gap: 16px;
+        margin-bottom: 12px;
+        color: rgba(255, 247, 220, 0.86);
+        font-size: 12px;
+        font-weight: 850;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .lighthouse-loader-percent::before {
+        content: attr(data-progress);
+      }
+
+      .lighthouse-loader-track {
+        position: relative;
+        height: 8px;
+        overflow: hidden;
+        border: 1px solid rgba(255, 231, 177, 0.2);
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.06);
+        box-shadow:
+          0 0 26px rgba(255, 190, 91, 0.08),
+          inset 0 1px 0 rgba(255, 255, 255, 0.05);
+      }
+
+      .lighthouse-loader-track::before {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        border-radius: inherit;
+        background:
+          linear-gradient(90deg, rgba(255, 171, 64, 0.86), rgba(255, 241, 172, 0.96));
+        box-shadow: 0 0 22px rgba(255, 198, 96, 0.36);
+        content: "";
+        transform: scaleX(calc(var(--loader-progress) / 100));
+        transform-origin: left center;
+        transition: transform 120ms linear;
+      }
+
+      .lighthouse-loader-note {
+        margin: 11px 0 0;
+        color: rgba(232, 238, 249, 0.48);
+        font-size: 12px;
+        font-weight: 650;
+        letter-spacing: 0.02em;
+      }
+
       .lighthouse-item {
         position: absolute;
         z-index: 2;
@@ -251,10 +329,20 @@ const title = "Lighthouse";
     </style>
   </head>
   <body>
+    <div class="lighthouse-loader" aria-hidden="true">
+      <div class="lighthouse-loader-panel">
+        <div class="lighthouse-loader-title">
+          <span>Entering Lighthouse</span>
+          <span class="lighthouse-loader-percent" data-loader-percent data-progress="00%"></span>
+        </div>
+        <div class="lighthouse-loader-track"></div>
+        <p class="lighthouse-loader-note">Climbing the spiral stairs</p>
+      </div>
+    </div>
     <main class="lighthouse-space" aria-label="Inside the lighthouse">
       <img
         class="lighthouse-scene"
-        src="/camp/lighthouse_scene.png"
+        data-preload-src="/camp/lighthouse_scene.png"
         alt=""
         width="1672"
         height="941"
@@ -270,7 +358,7 @@ const title = "Lighthouse";
         data-lighthouse-label="Cat"
         aria-label="Interact with the cat"
       >
-        <img src="/camp/cat.png" alt="" width="568" height="586" loading="eager" decoding="async" draggable="false" />
+        <img data-preload-src="/camp/cat.png" alt="" width="568" height="586" loading="eager" decoding="async" draggable="false" />
       </button>
       <div class="lighthouse-bar">
         <h1 class="lighthouse-title">{title}</h1>
@@ -278,7 +366,99 @@ const title = "Lighthouse";
       </div>
     </main>
     <script>
+      const loader = document.querySelector(".lighthouse-loader");
+      const loaderPercent = document.querySelector("[data-loader-percent]");
+      const preloadImages = Array.from(document.querySelectorAll("[data-preload-src]"));
       const lighthouseItems = Array.from(document.querySelectorAll("[data-lighthouse-item]"));
+
+      const setLoaderProgress = (progress) => {
+        const value = Math.max(0, Math.min(100, Math.round(progress)));
+        loader?.style.setProperty("--loader-progress", String(value));
+        loaderPercent?.setAttribute("data-progress", `${String(value).padStart(2, "0")}%`);
+      };
+
+      const finishLoader = () => {
+        setLoaderProgress(100);
+        window.setTimeout(() => {
+          loader?.classList.add("is-complete");
+        }, 180);
+      };
+
+      const applyBlobToImage = async (element, blob) => {
+        element.src = URL.createObjectURL(blob);
+        await element.decode?.().catch(() => {});
+      };
+
+      const preloadAsset = async ({ element, response, total }, onProgress) => {
+        if (!response.body || !total) {
+          const blob = await response.blob();
+          await applyBlobToImage(element, blob);
+          onProgress(total || blob.size || 1, total || blob.size || 1);
+          return;
+        }
+
+        const reader = response.body.getReader();
+        const chunks = [];
+        let loaded = 0;
+
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          chunks.push(value);
+          loaded += value.byteLength;
+          onProgress(loaded, total);
+        }
+
+        const blob = new Blob(chunks, {
+          type: response.headers.get("content-type") || "application/octet-stream",
+        });
+        await applyBlobToImage(element, blob);
+      };
+
+      const preloadLighthouseAssets = async () => {
+        if (!preloadImages.length) {
+          finishLoader();
+          return;
+        }
+
+        const loadedBytes = new Map();
+        const fallbackStep = 100 / preloadImages.length;
+
+        try {
+          const assets = await Promise.all(
+            preloadImages.map(async (element) => {
+              const url = element.dataset.preloadSrc;
+              const response = await fetch(url, { cache: "force-cache" });
+              if (!response.ok) throw new Error(`Could not load ${url}`);
+              return {
+                element,
+                response,
+                total: Number(response.headers.get("content-length")) || 0,
+              };
+            }),
+          );
+          const knownGrandTotal = assets.reduce((sum, asset) => sum + asset.total, 0);
+
+          await Promise.all(
+            assets.map((asset, index) =>
+              preloadAsset(asset, (loaded) => {
+                loadedBytes.set(index, loaded);
+                const knownLoaded = Array.from(loadedBytes.values()).reduce((sum, value) => sum + value, 0);
+                const fallbackProgress = loadedBytes.size * fallbackStep;
+                setLoaderProgress(knownGrandTotal > 0 ? (knownLoaded / knownGrandTotal) * 100 : fallbackProgress);
+              }),
+            ),
+          );
+          finishLoader();
+        } catch {
+          preloadImages.forEach((element) => {
+            if (element.dataset.preloadSrc && !element.getAttribute("src")) {
+              element.src = element.dataset.preloadSrc;
+            }
+          });
+          finishLoader();
+        }
+      };
 
       lighthouseItems.forEach((item) => {
         item.addEventListener("click", () => {
@@ -293,6 +473,9 @@ const title = "Lighthouse";
           );
         });
       });
+
+      setLoaderProgress(0);
+      preloadLighthouseAssets();
     </script>
   </body>
 </html>
