@@ -58,12 +58,46 @@ const title = "Lighthouse";
         content: "";
       }
 
+      .lantern-glow {
+        position: absolute;
+        left: 16.3%;
+        top: 66%;
+        z-index: 2;
+        width: clamp(180px, 27vw, 430px);
+        height: clamp(140px, 21vw, 330px);
+        border-radius: 50%;
+        background:
+          radial-gradient(ellipse at 39% 35%, rgba(255, 237, 148, 0.76), transparent 14%),
+          radial-gradient(ellipse at 42% 42%, rgba(255, 151, 42, 0.36), transparent 42%),
+          radial-gradient(ellipse at 52% 62%, rgba(255, 189, 78, 0.22), transparent 76%);
+        filter: blur(12px);
+        mix-blend-mode: screen;
+        opacity: 0.82;
+        pointer-events: none;
+        transform: translate(-50%, -50%);
+        animation: lantern-firelight 3.2s ease-in-out infinite;
+      }
+
+      .lantern-glow::after {
+        position: absolute;
+        left: 22%;
+        top: 54%;
+        width: 136%;
+        height: 76%;
+        border-radius: 50%;
+        background: radial-gradient(ellipse at 50% 50%, rgba(255, 158, 48, 0.28), transparent 70%);
+        filter: blur(20px);
+        opacity: 0.86;
+        transform: rotate(-7deg);
+        content: "";
+      }
+
       .lighthouse-bar {
         position: absolute;
         top: 24px;
         right: 24px;
         left: 24px;
-        z-index: 2;
+        z-index: 3;
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -109,7 +143,7 @@ const title = "Lighthouse";
         position: absolute;
         right: 24px;
         bottom: 24px;
-        z-index: 2;
+        z-index: 3;
         max-width: min(420px, calc(100vw - 48px));
         color: rgba(255, 244, 216, 0.72);
         font-size: 13px;
@@ -117,6 +151,34 @@ const title = "Lighthouse";
         line-height: 1.6;
         text-align: right;
         text-shadow: 0 2px 18px rgba(0, 0, 0, 0.62);
+      }
+
+      @keyframes lantern-firelight {
+        0%,
+        100% {
+          opacity: 0.58;
+          transform: translate(-50%, -50%) scale(0.9, 0.88);
+        }
+
+        24% {
+          opacity: 0.76;
+          transform: translate(-50%, -50%) scale(1.02, 0.96);
+        }
+
+        43% {
+          opacity: 1;
+          transform: translate(-50%, -50%) scale(1.18, 1.12);
+        }
+
+        62% {
+          opacity: 0.84;
+          transform: translate(-50%, -50%) scale(1.07, 1.03);
+        }
+
+        80% {
+          opacity: 0.62;
+          transform: translate(-50%, -50%) scale(0.94, 0.9);
+        }
       }
 
       @media (max-width: 760px) {
@@ -128,6 +190,13 @@ const title = "Lighthouse";
 
         .lighthouse-scene {
           object-position: 54% 50%;
+        }
+
+        .lantern-glow {
+          left: 9.6%;
+          top: 62%;
+          width: clamp(160px, 42vw, 260px);
+          height: clamp(120px, 34vw, 210px);
         }
 
         .lighthouse-caption {
@@ -152,6 +221,7 @@ const title = "Lighthouse";
         decoding="async"
         draggable="false"
       />
+      <div class="lantern-glow" aria-hidden="true"></div>
       <div class="lighthouse-bar">
         <h1 class="lighthouse-title">{title}</h1>
         <a class="return-link" href="/">Return Outside</a>
