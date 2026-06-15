@@ -58,6 +58,41 @@ const title = "Lighthouse";
         content: "";
       }
 
+      .lighthouse-item {
+        position: absolute;
+        z-index: 2;
+        display: block;
+        padding: 0;
+        border: 0;
+        background: transparent;
+        color: inherit;
+        line-height: 0;
+        cursor: pointer;
+        appearance: none;
+      }
+
+      .lighthouse-item:focus-visible {
+        outline: none;
+      }
+
+      .lighthouse-cat {
+        left: 59.7%;
+        top: 2%;
+        width: clamp(34px, 4.2vw, 72px);
+        opacity: 0.92;
+        filter: drop-shadow(0 0 10px rgba(255, 228, 148, 0.12));
+        transform: rotate(-4deg);
+        transform-origin: 50% 70%;
+      }
+
+      .lighthouse-cat img {
+        display: block;
+        width: 50%;
+        height: auto;
+        pointer-events: none;
+        user-select: none;
+      }
+
       .lantern-glow {
         position: absolute;
         left: 16.3%;
@@ -199,6 +234,12 @@ const title = "Lighthouse";
           height: clamp(120px, 34vw, 210px);
         }
 
+        .lighthouse-cat {
+          left: 58%;
+          top: 15%;
+          width: clamp(28px, 9vw, 48px);
+        }
+
         .lighthouse-caption {
           right: 16px;
           bottom: 16px;
@@ -222,10 +263,36 @@ const title = "Lighthouse";
         draggable="false"
       />
       <div class="lantern-glow" aria-hidden="true"></div>
+      <button
+        class="lighthouse-item lighthouse-cat"
+        type="button"
+        data-lighthouse-item="cat"
+        data-lighthouse-label="Cat"
+        aria-label="Interact with the cat"
+      >
+        <img src="/camp/cat.png" alt="" width="568" height="586" loading="eager" decoding="async" draggable="false" />
+      </button>
       <div class="lighthouse-bar">
         <h1 class="lighthouse-title">{title}</h1>
         <a class="return-link" href="/">Return Outside</a>
       </div>
     </main>
+    <script>
+      const lighthouseItems = Array.from(document.querySelectorAll("[data-lighthouse-item]"));
+
+      lighthouseItems.forEach((item) => {
+        item.addEventListener("click", () => {
+          window.dispatchEvent(
+            new CustomEvent("lighthouse:click", {
+              detail: {
+                id: item.dataset.lighthouseItem || "",
+                label: item.dataset.lighthouseLabel || "",
+                element: item,
+              },
+            }),
+          );
+        });
+      });
+    </script>
   </body>
 </html>
