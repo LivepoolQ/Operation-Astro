@@ -913,6 +913,74 @@ const planets = [
         text-align: center;
       }
 
+      .camp-dialog {
+        position: fixed;
+        right: 24px;
+        bottom: 24px;
+        left: 24px;
+        z-index: 18;
+        display: flex;
+        justify-content: center;
+        pointer-events: none;
+      }
+
+      .camp-dialog[hidden] {
+        display: none;
+      }
+
+      .camp-dialog-panel {
+        position: relative;
+        width: min(560px, 100%);
+        padding: 18px 48px 18px 20px;
+        border: 1px solid rgba(185, 205, 231, 0.22);
+        border-radius: 8px;
+        background:
+          linear-gradient(180deg, rgba(18, 29, 47, 0.96), rgba(7, 12, 23, 0.98));
+        box-shadow:
+          0 20px 70px rgba(0, 0, 0, 0.42),
+          inset 0 1px 0 rgba(255, 255, 255, 0.06);
+        pointer-events: auto;
+      }
+
+      .camp-dialog-speaker {
+        margin: 0 0 7px;
+        color: rgba(195, 216, 245, 0.78);
+        font-size: 12px;
+        font-weight: 800;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .camp-dialog-line {
+        min-height: 24px;
+        margin: 0;
+        color: rgba(244, 247, 251, 0.9);
+        font-size: 15px;
+        font-weight: 650;
+        line-height: 1.65;
+      }
+
+      .camp-dialog-close {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        display: grid;
+        width: 30px;
+        height: 30px;
+        place-items: center;
+        border: 1px solid rgba(232, 238, 249, 0.14);
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.04);
+        color: rgba(244, 247, 251, 0.76);
+        cursor: pointer;
+      }
+
+      .camp-dialog-close:hover,
+      .camp-dialog-close:focus-visible {
+        border-color: rgba(195, 216, 245, 0.32);
+        outline: none;
+      }
+
       .fire-sparks {
         position: absolute;
         left: 63.5%;
@@ -1557,6 +1625,14 @@ const planets = [
       </div>
     </div>
 
+    <div class="camp-dialog" data-camp-dialog hidden role="status" aria-live="polite">
+      <div class="camp-dialog-panel">
+        <button class="camp-dialog-close" type="button" data-camp-dialog-close aria-label="Close dialogue">×</button>
+        <p class="camp-dialog-speaker" data-camp-dialog-speaker></p>
+        <p class="camp-dialog-line" data-camp-dialog-line></p>
+      </div>
+    </div>
+
     <script>
       if ("scrollRestoration" in history) {
         history.scrollRestoration = "manual";
@@ -1666,6 +1742,16 @@ const planets = [
       const CAMP_SMOKE_SRC = "/camp/smoke.gif";
       const CAMP_DOG_SRC = "/camp/dog.png";
       const CAMP_DOG_SLEEP_SRC = "/camp/dog_sleep.png";
+      const EXTINGUISHED_DIALOGUE = {
+        people: {
+          speaker: "WW:",
+          line: "It's freezing out here. We should add some wood to keep the fire going.",
+        },
+        dog: {
+          speaker: "YY:",
+          line: "zzz...zzz...",
+        },
+      };
       const campfireModal = document.querySelector("[data-campfire-modal]");
       const campfireClose = document.querySelector("[data-campfire-close]");
       const campfireAdd = document.querySelector("[data-campfire-add]");
@@ -1677,7 +1763,12 @@ const planets = [
       const campWoodImage = document.querySelector(".camp-wood");
       const campfireVisualImage = document.querySelector(".campfire-visual img");
       const campDogImage = document.querySelector(".camp-dog .camp-visual");
+      const campDialog = document.querySelector("[data-camp-dialog]");
+      const campDialogClose = document.querySelector("[data-camp-dialog-close]");
+      const campDialogSpeaker = document.querySelector("[data-camp-dialog-speaker]");
+      const campDialogLine = document.querySelector("[data-camp-dialog-line]");
       let campfireSource = "api";
+      let isCampfireExtinguished = false;
 
       const getCampfireSnapshot = (state = {}) => {
         const now = Date.now();
@@ -1713,13 +1804,26 @@ const planets = [
         localStorage.setItem(LOCAL_CAMPFIRE_KEY, JSON.stringify({ burnUntil: state.burnUntil }));
       };
 
+      const closeCampDialogue = () => {
+        if (campDialog) campDialog.hidden = true;
+      };
+
+      const showCampDialogue = (dialogue) => {
+        if (!campDialog || !dialogue) return;
+        if (campDialogSpeaker) campDialogSpeaker.textContent = dialogue.speaker;
+        if (campDialogLine) campDialogLine.textContent = dialogue.line;
+        campDialog.hidden = false;
+      };
+
       const applyCampfireScene = (snapshot) => {
         const isExtinguished = snapshot.woodCount === 0 && snapshot.remainingMs <= 0;
+        isCampfireExtinguished = isExtinguished;
         dome?.classList.toggle("is-camp-extinguished", isExtinguished);
         campfireModal?.classList.toggle("is-extinguished", isExtinguished);
         if (campWoodImage) campWoodImage.src = isExtinguished ? CAMP_SMOKE_SRC : CAMP_WOOD_SRC;
         if (campfireVisualImage) campfireVisualImage.src = isExtinguished ? CAMP_SMOKE_SRC : CAMP_FIRE_SRC;
         if (campDogImage) campDogImage.src = isExtinguished ? CAMP_DOG_SLEEP_SRC : CAMP_DOG_SRC;
+        if (!isExtinguished) closeCampDialogue();
       };
 
       const renderCampfire = (state, status = "") => {
@@ -1826,17 +1930,33 @@ const planets = [
       };
 
       window.addEventListener("camp:click", (event) => {
-        if (event.detail?.id === "fire") openCampfire();
+        const id = event.detail?.id;
+        if (id === "fire") {
+          closeCampDialogue();
+          openCampfire();
+          return;
+        }
+
+        if (isCampfireExtinguished && (id === "people" || id === "dog")) {
+          showCampDialogue(EXTINGUISHED_DIALOGUE[id]);
+          return;
+        }
+
+        closeCampDialogue();
       });
 
       campfireAdd?.addEventListener("click", addCampfireWood);
       campfireExtinguish?.addEventListener("click", extinguishCampfire);
       campfireClose?.addEventListener("click", closeCampfire);
+      campDialogClose?.addEventListener("click", closeCampDialogue);
       campfireModal?.addEventListener("click", (event) => {
         if (event.target === campfireModal) closeCampfire();
       });
       window.addEventListener("keydown", (event) => {
-        if (event.key === "Escape") closeCampfire();
+        if (event.key === "Escape") {
+          closeCampfire();
+          closeCampDialogue();
+        }
       });
 
       fetchCampfire();
