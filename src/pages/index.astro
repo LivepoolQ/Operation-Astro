@@ -448,35 +448,33 @@ const planets = [
         transition: transform 80ms linear;
       }
 
-      .ridge-lighthouse {
-        position: relative;
-        display: block;
-        width: 100%;
-        height: 100%;
+      .camp-item.ridge-lighthouse {
+        position: static;
+        display: inline;
+        height: auto;
+        padding: 0;
+        border: 0;
+        background: transparent;
+        line-height: normal;
         opacity: 0.78;
-        filter: drop-shadow(0 0 14px rgba(255, 236, 188, 0.26));
+        cursor: pointer;
         pointer-events: auto;
         transform: none;
-        transform-origin: 50% 62%;
+        transform-box: fill-box;
+        transform-origin: center;
+        appearance: auto;
         user-select: none;
       }
 
-      .ridge-lighthouse::before {
-        position: absolute;
-        inset: -13%;
-        z-index: 0;
-        border-radius: 50%;
-        background:
-          radial-gradient(circle at 50% 48%, rgba(255, 244, 191, 0.16), transparent 38%),
-          radial-gradient(circle at 50% 50%, rgba(255, 231, 154, 0.07), transparent 68%);
-        filter: blur(7px);
-        opacity: 0.38;
-        animation: lighthouse-glow 7.5s ease-in-out infinite;
-        content: "";
+      .ridge-lighthouse-hit {
+        fill: none;
+        pointer-events: all;
+        stroke: none;
       }
 
-      .ridge-lighthouse .camp-visual {
-        filter: drop-shadow(0 0 9px rgba(255, 243, 192, 0.13));
+      .ridge-lighthouse-image {
+        pointer-events: none;
+        user-select: none;
       }
 
       .ridge-middle {
@@ -492,11 +490,6 @@ const planets = [
         position: relative;
         width: 100%;
         height: 100%;
-      }
-
-      .ridge-lighthouse-object {
-        overflow: visible;
-        pointer-events: auto;
       }
 
       .forest-far {
@@ -644,10 +637,6 @@ const planets = [
           opacity 180ms ease,
           filter 180ms ease;
         appearance: none;
-      }
-
-      .ridge-lighthouse-object .camp-item {
-        position: relative;
       }
 
       .camp-visual {
@@ -1485,24 +1474,6 @@ const planets = [
         }
       }
 
-      @keyframes lighthouse-glow {
-        0%,
-        100% {
-          opacity: 0.34;
-          transform: scale(0.992);
-        }
-
-        48% {
-          opacity: 0.43;
-          transform: scale(1.006);
-        }
-
-        64% {
-          opacity: 0.38;
-          transform: scale(1);
-        }
-      }
-
       @keyframes dog-breathe {
         0%,
         100% {
@@ -1641,18 +1612,25 @@ const planets = [
                     fill="#18243a"
                     opacity="1"
                   />
-                  <foreignObject class="ridge-lighthouse-object" x="315" y="210" width="86" height="82">
-                    <button
-                      xmlns="http://www.w3.org/1999/xhtml"
-                      class="camp-item ridge-lighthouse"
-                      type="button"
-                      data-camp-item="lighthouse"
-                      data-camp-label="Lighthouse"
-                      aria-label="Interact with the lighthouse"
-                    >
-                      <img class="camp-visual" src="/camp/lighthouse.png" alt="" width="1265" height="1205" loading="eager" decoding="async" draggable="false" />
-                    </button>
-                  </foreignObject>
+                  <g
+                    class="camp-item ridge-lighthouse"
+                    role="button"
+                    tabindex="0"
+                    data-camp-item="lighthouse"
+                    data-camp-label="Lighthouse"
+                    aria-label="Interact with the lighthouse"
+                  >
+                    <rect class="ridge-lighthouse-hit" x="248" y="88" width="104" height="104" />
+                    <image
+                      class="ridge-lighthouse-image"
+                      href="/camp/lighthouse.png"
+                      x="260"
+                      y="89"
+                      width="120"
+                      height="80"
+                      preserveAspectRatio="none"
+                    />
+                  </g>
                 </svg>
               </div>
             </div>
@@ -1974,6 +1952,13 @@ const planets = [
           emitCampEvent("click", item, {
             active: item.classList.contains("is-camp-active"),
           });
+        });
+
+        item.addEventListener("keydown", (event) => {
+          if (item.tagName.toLowerCase() === "button") return;
+          if (event.key !== "Enter" && event.key !== " ") return;
+          event.preventDefault();
+          item.dispatchEvent(new MouseEvent("click", { bubbles: true }));
         });
       });
 
