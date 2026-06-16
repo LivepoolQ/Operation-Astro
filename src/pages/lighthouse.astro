@@ -195,6 +195,12 @@ const title = "Lighthouse";
         user-select: none;
       }
 
+      .lighthouse-cat.is-hidden {
+        opacity: 0;
+        pointer-events: none;
+        visibility: hidden;
+      }
+
       .lantern-glow {
         position: absolute;
         left: 16.3%;
@@ -288,6 +294,65 @@ const title = "Lighthouse";
         line-height: 1.6;
         text-align: right;
         text-shadow: 0 2px 18px rgba(0, 0, 0, 0.62);
+      }
+
+      .lighthouse-dialog {
+        position: fixed;
+        right: 24px;
+        bottom: 24px;
+        left: 24px;
+        z-index: 30;
+        display: flex;
+        justify-content: center;
+        pointer-events: none;
+      }
+
+      .lighthouse-dialog[hidden] {
+        display: none;
+      }
+
+      .lighthouse-dialog-panel {
+        position: relative;
+        width: min(560px, 100%);
+        padding: 18px 48px 18px 20px;
+        border: 1px solid rgba(255, 231, 177, 0.22);
+        border-radius: 8px;
+        background:
+          linear-gradient(180deg, rgba(20, 18, 15, 0.96), rgba(8, 7, 12, 0.98));
+        box-shadow:
+          0 20px 70px rgba(0, 0, 0, 0.42),
+          inset 0 1px 0 rgba(255, 255, 255, 0.06);
+        pointer-events: auto;
+      }
+
+      .lighthouse-dialog-line {
+        min-height: 24px;
+        margin: 0;
+        color: rgba(255, 247, 220, 0.92);
+        font-size: 15px;
+        font-weight: 650;
+        line-height: 1.65;
+      }
+
+      .lighthouse-dialog-close {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        display: grid;
+        width: 30px;
+        height: 30px;
+        place-items: center;
+        border: 1px solid rgba(255, 231, 177, 0.16);
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.04);
+        color: rgba(255, 247, 220, 0.76);
+        cursor: pointer;
+      }
+
+      .lighthouse-dialog-close:hover,
+      .lighthouse-dialog-close:focus-visible {
+        border-color: rgba(255, 231, 177, 0.38);
+        outline: none;
       }
 
       @keyframes lantern-firelight {
@@ -385,11 +450,24 @@ const title = "Lighthouse";
         <a class="return-link" href="/">Return Outside</a>
       </div>
     </main>
+    <div class="lighthouse-dialog" data-lighthouse-dialog hidden role="status" aria-live="polite">
+      <div class="lighthouse-dialog-panel">
+        <button class="lighthouse-dialog-close" type="button" data-lighthouse-dialog-close aria-label="Close dialogue">×</button>
+        <p class="lighthouse-dialog-line" data-lighthouse-dialog-line></p>
+      </div>
+    </div>
     <script>
       const loader = document.querySelector(".lighthouse-loader");
       const loaderPercent = document.querySelector("[data-loader-percent]");
       const preloadImages = Array.from(document.querySelectorAll("[data-preload-src]"));
       const lighthouseItems = Array.from(document.querySelectorAll("[data-lighthouse-item]"));
+      const lighthouseDialog = document.querySelector("[data-lighthouse-dialog]");
+      const lighthouseDialogClose = document.querySelector("[data-lighthouse-dialog-close]");
+      const lighthouseDialogLine = document.querySelector("[data-lighthouse-dialog-line]");
+      const lighthouseCat = document.querySelector("[data-lighthouse-item='cat']");
+      const LIGHTHOUSE_CAT_RESPAWN_MS = 60 * 1000;
+      let activeLighthouseDialogueId = "";
+      let lighthouseCatRespawnTimer = 0;
 
       const setLoaderProgress = (progress) => {
         const value = Math.max(0, Math.min(100, Math.round(progress)));
@@ -480,6 +558,27 @@ const title = "Lighthouse";
         }
       };
 
+      const closeLighthouseDialogue = () => {
+        if (activeLighthouseDialogueId === "cat" && lighthouseCat instanceof HTMLElement) {
+          lighthouseCat.classList.add("is-hidden");
+          window.clearTimeout(lighthouseCatRespawnTimer);
+          lighthouseCatRespawnTimer = window.setTimeout(() => {
+            lighthouseCat.classList.remove("is-hidden");
+            lighthouseCatRespawnTimer = 0;
+          }, LIGHTHOUSE_CAT_RESPAWN_MS);
+        }
+
+        activeLighthouseDialogueId = "";
+        if (lighthouseDialog) lighthouseDialog.hidden = true;
+      };
+
+      const showLighthouseDialogue = (line, id = "") => {
+        if (!lighthouseDialog || !lighthouseDialogLine || !line) return;
+        activeLighthouseDialogueId = id;
+        lighthouseDialogLine.textContent = line;
+        lighthouseDialog.hidden = false;
+      };
+
       lighthouseItems.forEach((item) => {
         item.addEventListener("click", () => {
           window.dispatchEvent(
@@ -492,6 +591,20 @@ const title = "Lighthouse";
             }),
           );
         });
+      });
+
+      window.addEventListener("lighthouse:click", (event) => {
+        const id = event.detail?.id;
+        if (id === "cat") {
+          showLighthouseDialogue("It's the black cat I saw in the forest. What is he doing here...", id);
+        }
+      });
+
+      lighthouseDialogClose?.addEventListener("click", closeLighthouseDialogue);
+      window.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") {
+          closeLighthouseDialogue();
+        }
       });
 
       setLoaderProgress(0);
