@@ -2596,14 +2596,43 @@ const planets = [
         setCampfireMessageConfirm(true);
       };
 
-      const saveCampfireMessage = () => {
+      const saveCampfireMessage = async () => {
         const message = getCampfireMessageText();
         if (!message) return;
-        writeLocalMessage(message);
-        setCampfireMessageConfirm(false);
-        setCampfireMessagePanel(false);
-        updateCampfireMessageUi();
-        if (campfireStatus) campfireStatus.textContent = "Your note is tucked beside the campfire.";
+
+        if (campfireMessageConfirmSend) campfireMessageConfirmSend.disabled = true;
+        if (campfireStatus) campfireStatus.textContent = "Leaving your note by the fire...";
+
+        try {
+          const response = await fetch("/api/campfire/message", {
+            method: "POST",
+            headers: {
+              Accept: "application/json",
+              "content-type": "application/json",
+            },
+            body: JSON.stringify({ message }),
+          });
+          const state = await response.json();
+          if (!response.ok) throw new Error(state.error || "Could not leave message");
+
+          writeLocalMessage(state.message || message);
+          setCampfireMessageConfirm(false);
+          setCampfireMessagePanel(false);
+          updateCampfireMessageUi();
+          if (campfireStatus) {
+            campfireStatus.textContent = state.email?.configured
+              ? "Your note is tucked beside the campfire and sent along."
+              : "Your note is tucked beside the campfire.";
+          }
+        } catch {
+          writeLocalMessage(message);
+          setCampfireMessageConfirm(false);
+          setCampfireMessagePanel(false);
+          updateCampfireMessageUi();
+          if (campfireStatus) campfireStatus.textContent = "Saved locally for preview until the message backend is ready.";
+        } finally {
+          if (campfireMessageConfirmSend) campfireMessageConfirmSend.disabled = false;
+        }
       };
 
       const moveCampfireDragLog = (clientX, clientY) => {
