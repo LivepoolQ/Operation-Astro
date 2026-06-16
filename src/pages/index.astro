@@ -519,6 +519,43 @@ const planets = [
         transition: transform 80ms linear;
       }
 
+      .forest-cat {
+        position: static;
+        display: inline;
+        height: auto;
+        padding: 0;
+        border: 0;
+        background: transparent;
+        line-height: normal;
+        cursor: pointer;
+        filter: drop-shadow(0 0 5px rgba(255, 244, 70, 0.18));
+        opacity: 0.92;
+        pointer-events: auto;
+        transform: none;
+        transform-box: fill-box;
+        transform-origin: center;
+        appearance: auto;
+        outline: none;
+        user-select: none;
+      }
+
+      .forest-cat-hit {
+        fill: none;
+        outline: none;
+        pointer-events: all;
+        stroke: none;
+      }
+
+      .forest-cat-image {
+        pointer-events: none;
+        user-select: none;
+      }
+
+      .forest-cat:focus,
+      .forest-cat:focus-visible {
+        outline: none;
+      }
+
       .fire-reflection {
         position: absolute;
         left: calc(50% + clamp(48px, 6.5vw, 82px));
@@ -2132,7 +2169,7 @@ const planets = [
           </div>
           <div class="fire-reflection" aria-hidden="true"></div>
           <div class="horizon" aria-hidden="true"></div>
-          <div class="ground-forest forest-ground" aria-hidden="true">
+          <div class="ground-forest forest-ground">
             <svg viewBox="0 0 1000 240" preserveAspectRatio="none" focusable="false">
               <g fill="#050c17">
                 <polygon points="-28,242 18,96 64,226" opacity="0.78" />
@@ -2165,6 +2202,26 @@ const planets = [
                 <polygon points="818,242 858,108 898,226" />
                 <polygon points="886,228 926,146 966,246" opacity="0.68" />
                 <polygon points="958,244 998,114 1038,230" opacity="0.82" />
+              </g>
+              <g
+                class="forest-cat"
+                role="button"
+                tabindex="0"
+                data-camp-item="forest-cat"
+                data-camp-label="Forest cat"
+                aria-label="Interact with the cat in the forest"
+              >
+                <rect class="forest-cat-hit" x="310" y="195" width="30" height="30" rx="15" ry="15" focusable="false" />
+                <image
+                  class="forest-cat-image"
+                  href="/camp/cat_far_0.png"
+                  x="325"
+                  y="210"
+                  width="5"
+                  height="10"
+                  preserveAspectRatio="none"
+                  focusable="false"
+                />
               </g>
             </svg>
           </div>
