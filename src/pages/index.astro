@@ -2713,7 +2713,12 @@ const planets = [
             body: JSON.stringify({ message }),
           });
           const state = await response.json();
-          if (!response.ok) throw new Error(state.error || "Could not leave message");
+          if (!response.ok) {
+            const error = new Error(state.error || "Could not leave message");
+            error.status = response.status;
+            error.code = state.code || "";
+            throw error;
+          }
 
           writeLocalMessage(state.message || message);
           setCampfireMessageConfirm(false);
@@ -2728,7 +2733,17 @@ const planets = [
                 : "Your note is tucked beside the campfire.";
             }
           }
-        } catch {
+        } catch (error) {
+          if (error?.status === 429 || error?.code === "rate_limited") {
+            setCampfireMessageConfirm(false);
+            updateCampfireMessageUi();
+            if (campfireStatus) {
+              campfireStatus.textContent =
+                "Thank you for leaving your message. Please wait for 10 minutes to send another message.";
+            }
+            return;
+          }
+
           writeLocalMessage(message);
           setCampfireMessageConfirm(false);
           setCampfireMessagePanel(false);

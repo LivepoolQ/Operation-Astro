@@ -108,7 +108,13 @@ export async function onRequestPost({ request, env }) {
     const rateLimitKey = getClientKey(request);
     const rateLimited = await env.CAMPFIRE_STATE.get(rateLimitKey);
     if (rateLimited) {
-      return json({ error: "Please wait a little before leaving another message." }, { status: 429 });
+      return json(
+        {
+          code: "rate_limited",
+          error: "Thank you for leaving your message. Please wait for 10 minutes to send another message.",
+        },
+        { status: 429 },
+      );
     }
 
     const now = Date.now();
