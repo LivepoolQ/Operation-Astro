@@ -2720,9 +2720,13 @@ const planets = [
           setCampfireMessagePanel(false);
           updateCampfireMessageUi();
           if (campfireStatus) {
-            campfireStatus.textContent = state.email?.configured
-              ? "Your note is tucked beside the campfire and sent along."
-              : "Your note is tucked beside the campfire.";
+            if (state.warning) {
+              campfireStatus.textContent = "Your note is tucked beside the campfire, but the email notice needs attention.";
+            } else {
+              campfireStatus.textContent = state.email?.configured
+                ? "Your note is tucked beside the campfire and sent along."
+                : "Your note is tucked beside the campfire.";
+            }
           }
         } catch {
           writeLocalMessage(message);
