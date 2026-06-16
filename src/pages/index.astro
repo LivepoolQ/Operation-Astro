@@ -717,6 +717,72 @@ const planets = [
         filter: var(--fire-lit-filter);
       }
 
+      .camp-message-note {
+        left: 15%;
+        bottom: 55%;
+        z-index: 5;
+        width: 8.4%;
+        opacity: 1;
+        --fire-lit-filter: brightness(0.9) saturate(0.88);
+        filter: var(--fire-lit-filter) drop-shadow(0 5px 8px rgba(0, 0, 0, 0.2));
+      }
+
+      .camp-message-note[hidden] {
+        display: none;
+      }
+
+      .message-note-modal {
+        position: fixed;
+        inset: 0;
+        z-index: 21;
+        display: grid;
+        place-items: center;
+        padding: 24px;
+        background: rgba(2, 6, 16, 0.72);
+        backdrop-filter: blur(10px);
+      }
+
+      .message-note-modal[hidden] {
+        display: none;
+      }
+
+      .message-note-panel {
+        position: relative;
+        width: min(430px, calc(100vw - 42px));
+        padding: 18px;
+      }
+
+      .message-note-panel img {
+        display: block;
+        width: 100%;
+        height: auto;
+        filter: drop-shadow(0 24px 58px rgba(0, 0, 0, 0.46));
+        user-select: none;
+      }
+
+      .message-note-close {
+        position: absolute;
+        top: 4px;
+        right: 4px;
+        z-index: 2;
+        display: grid;
+        width: 34px;
+        height: 34px;
+        place-items: center;
+        border: 1px solid rgba(231, 238, 251, 0.18);
+        border-radius: 50%;
+        background: rgba(5, 9, 18, 0.66);
+        color: rgba(244, 247, 251, 0.82);
+        cursor: pointer;
+        font: inherit;
+      }
+
+      .message-note-close:hover,
+      .message-note-close:focus-visible {
+        border-color: rgba(255, 202, 121, 0.36);
+        outline: none;
+      }
+
       .cast-shadow {
         position: absolute;
         z-index: 1;
@@ -2002,6 +2068,16 @@ const planets = [
               <img class="camp-visual" src="/camp/car_real.png" alt="" width="1448" height="1086" loading="eager" decoding="async" draggable="false" />
               <span class="people-reflection" aria-hidden="true"></span>
             </button>
+            <button
+              class="camp-item camp-message-note"
+              type="button"
+              data-camp-item="message-note"
+              data-camp-label="Camp note"
+              aria-label="Read the camp note"
+              hidden
+            >
+              <img class="camp-visual" src="/camp/message.png" alt="" width="432" height="326" loading="eager" decoding="async" draggable="false" />
+            </button>
 
             <button
               class="camp-item camp-people"
@@ -2156,6 +2232,13 @@ const planets = [
         <button class="camp-dialog-close" type="button" data-camp-dialog-close aria-label="Close dialogue">×</button>
         <p class="camp-dialog-speaker" data-camp-dialog-speaker></p>
         <p class="camp-dialog-line" data-camp-dialog-line></p>
+      </div>
+    </div>
+
+    <div class="message-note-modal" data-message-note-modal hidden role="dialog" aria-modal="true" aria-label="Camp note">
+      <div class="message-note-panel">
+        <button class="message-note-close" type="button" data-message-note-close aria-label="Close note">×</button>
+        <img src="/camp/message_window.png" alt="" width="1024" height="1024" loading="lazy" decoding="async" draggable="false" />
       </div>
     </div>
 
@@ -2322,6 +2405,9 @@ const planets = [
       const campfireMessageConfirm = document.querySelector("[data-campfire-message-confirm]");
       const campfireMessageCancel = document.querySelector("[data-campfire-message-cancel]");
       const campfireMessageConfirmSend = document.querySelector("[data-campfire-message-confirm-send]");
+      const campMessageNote = document.querySelector("[data-camp-item='message-note']");
+      const messageNoteModal = document.querySelector("[data-message-note-modal]");
+      const messageNoteClose = document.querySelector("[data-message-note-close]");
       const campWoodImage = document.querySelector(".camp-wood");
       const campfireVisualImage = document.querySelector(".campfire-visual img");
       const campDogImage = document.querySelector(".camp-dog .camp-visual");
@@ -2460,6 +2546,10 @@ const planets = [
 
         if (campfireMessageHint) {
           campfireMessageHint.textContent = savedMessage?.message ? "A local note is tucked beside the fire." : "Local draft for now.";
+        }
+
+        if (campMessageNote) {
+          campMessageNote.hidden = !savedMessage?.message;
         }
       };
 
@@ -2636,6 +2726,16 @@ const planets = [
         }
       };
 
+      const openMessageNote = () => {
+        if (!messageNoteModal) return;
+        messageNoteModal.hidden = false;
+        messageNoteClose?.focus();
+      };
+
+      const closeMessageNote = () => {
+        if (messageNoteModal) messageNoteModal.hidden = true;
+      };
+
       const moveCampfireDragLog = (clientX, clientY) => {
         if (!campfireDragLog) return;
         campfireDragLog.style.transform = `translate3d(${clientX - 58}px, ${clientY - 34}px, 0) rotate(-8deg)`;
@@ -2789,6 +2889,12 @@ const planets = [
           return;
         }
 
+        if (id === "message-note") {
+          closeCampDialogue();
+          openMessageNote();
+          return;
+        }
+
         if (isCampfireExtinguished && (id === "people" || id === "dog")) {
           showCampDialogue(EXTINGUISHED_DIALOGUE[id]);
           return;
@@ -2822,14 +2928,19 @@ const planets = [
       campfireExtinguish?.addEventListener("click", extinguishCampfire);
       campfireClose?.addEventListener("click", closeCampfire);
       campDialogClose?.addEventListener("click", closeCampDialogue);
+      messageNoteClose?.addEventListener("click", closeMessageNote);
       lighthouseCancel?.addEventListener("click", closeLighthouseEntry);
       campfireModal?.addEventListener("click", (event) => {
         if (event.target === campfireModal) closeCampfire();
+      });
+      messageNoteModal?.addEventListener("click", (event) => {
+        if (event.target === messageNoteModal) closeMessageNote();
       });
       window.addEventListener("keydown", (event) => {
         if (event.key === "Escape") {
           closeCampfire();
           closeCampDialogue();
+          closeMessageNote();
           closeLighthouseEntry();
         }
       });
