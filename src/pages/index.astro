@@ -556,6 +556,12 @@ const planets = [
         outline: none;
       }
 
+      .forest-cat.is-hidden {
+        opacity: 0;
+        pointer-events: none;
+        visibility: hidden;
+      }
+
       .fire-reflection {
         position: absolute;
         left: calc(50% + clamp(48px, 6.5vw, 82px));
@@ -2438,6 +2444,7 @@ const planets = [
       const CAMP_WOOD_SINGLE_SRC = "/camp/wood_single.png";
       const CAMP_DOG_SRC = "/camp/dog.png";
       const CAMP_DOG_SLEEP_SRC = "/camp/dog_sleep.png";
+      const FOREST_CAT_RESPAWN_MS = 2 * 60 * 1000;
       const EXTINGUISHED_DIALOGUE = {
         people: {
           speaker: "WW:",
@@ -2446,6 +2453,12 @@ const planets = [
         dog: {
           speaker: "YY:",
           line: "zzz...zzz...",
+        },
+      };
+      const CAMP_DIALOGUE = {
+        "forest-cat": {
+          speaker: "You:",
+          line: "I seem to saw a black cat in the forest. Maybe I should take a look...",
         },
       };
       const campfireModal = document.querySelector("[data-campfire-modal]");
@@ -2477,6 +2490,7 @@ const planets = [
       const campWoodImage = document.querySelector(".camp-wood");
       const campfireVisualImage = document.querySelector(".campfire-visual img");
       const campDogImage = document.querySelector(".camp-dog .camp-visual");
+      const forestCat = document.querySelector("[data-camp-item='forest-cat']");
       const campDialog = document.querySelector("[data-camp-dialog]");
       const campDialogClose = document.querySelector("[data-camp-dialog-close]");
       const campDialogSpeaker = document.querySelector("[data-camp-dialog-speaker]");
@@ -2489,6 +2503,8 @@ const planets = [
       let campfireState = { burnUntil: 0 };
       let isAddingCampfireWood = false;
       let isDraggingCampfireWood = false;
+      let activeCampDialogueId = "";
+      let forestCatRespawnTimer = 0;
       let lighthouseTimer = 0;
       let lighthouseEntryTimer = 0;
       let lighthouseReturnTimer = 0;
@@ -2566,12 +2582,25 @@ const planets = [
       };
 
       const closeCampDialogue = () => {
+        if (activeCampDialogueId === "forest-cat" && forestCat instanceof Element) {
+          forestCat.classList.add("is-hidden");
+          forestCat.classList.remove("is-camp-active", "is-camp-hovered");
+          window.clearTimeout(forestCatRespawnTimer);
+          forestCatRespawnTimer = window.setTimeout(() => {
+            forestCat.classList.remove("is-hidden");
+            forestCatRespawnTimer = 0;
+          }, FOREST_CAT_RESPAWN_MS);
+        }
+
+        activeCampDialogueId = "";
         if (campDialog) campDialog.hidden = true;
       };
 
-      const showCampDialogue = (dialogue) => {
+      const showCampDialogue = (dialogue, id = "") => {
         if (!campDialog || !dialogue) return;
+        activeCampDialogueId = id;
         if (campDialogSpeaker) campDialogSpeaker.textContent = dialogue.speaker;
+        if (campDialogSpeaker) campDialogSpeaker.hidden = !dialogue.speaker;
         if (campDialogLine) campDialogLine.textContent = dialogue.line;
         campDialog.hidden = false;
       };
@@ -2977,6 +3006,11 @@ const planets = [
         if (id === "message-note") {
           closeCampDialogue();
           openMessageNote();
+          return;
+        }
+
+        if (id === "forest-cat") {
+          showCampDialogue(CAMP_DIALOGUE[id], id);
           return;
         }
 
