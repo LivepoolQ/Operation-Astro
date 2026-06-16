@@ -463,11 +463,18 @@ const planets = [
         transform-box: fill-box;
         transform-origin: center;
         appearance: auto;
+        outline: none;
         user-select: none;
+      }
+
+      .camp-item.ridge-lighthouse:focus,
+      .camp-item.ridge-lighthouse:focus-visible {
+        outline: none;
       }
 
       .ridge-lighthouse-hit {
         fill: none;
+        outline: none;
         pointer-events: all;
         stroke: none;
       }
@@ -1971,7 +1978,7 @@ const planets = [
                     data-camp-label="Lighthouse"
                     aria-label="Interact with the lighthouse"
                   >
-                    <rect class="ridge-lighthouse-hit" x="248" y="88" width="104" height="104" />
+                    <rect class="ridge-lighthouse-hit" x="248" y="88" width="104" height="104" focusable="false" />
                     <image
                       class="ridge-lighthouse-image"
                       href="/camp/lighthouse.png"
@@ -1980,6 +1987,7 @@ const planets = [
                       width="120"
                       height="80"
                       preserveAspectRatio="none"
+                      focusable="false"
                     />
                   </g>
                 </svg>
