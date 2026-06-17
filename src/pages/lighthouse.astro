@@ -36,6 +36,24 @@ const title = "Lighthouse";
         background: #050913;
       }
 
+      .scene-backdrop,
+      .scene-frame,
+      .transition-shell,
+      .lighthouse-dialog,
+      .lighthouse-choice {
+        transition:
+          opacity 220ms ease,
+          visibility 220ms ease;
+      }
+
+      .scene-backdrop[hidden],
+      .scene-frame[hidden],
+      .transition-shell[hidden],
+      .lighthouse-dialog[hidden],
+      .lighthouse-choice[hidden] {
+        display: none;
+      }
+
       .scene-backdrop {
         position: absolute;
         inset: -24px;
@@ -86,7 +104,7 @@ const title = "Lighthouse";
         --loader-progress: 0;
         position: fixed;
         inset: 0;
-        z-index: 20;
+        z-index: 60;
         display: grid;
         place-items: center;
         background:
@@ -195,12 +213,6 @@ const title = "Lighthouse";
         user-select: none;
       }
 
-      .lighthouse-cat.is-hidden {
-        opacity: 0;
-        pointer-events: none;
-        visibility: hidden;
-      }
-
       .lantern-glow {
         position: absolute;
         left: 16.3%;
@@ -235,12 +247,114 @@ const title = "Lighthouse";
         content: "";
       }
 
+      .second-floor-stairs {
+        left: 67.8%;
+        top: 69.4%;
+        width: 25%;
+        height: 25%;
+        border-radius: 34% 36% 22% 26%;
+      }
+
+      .second-floor-stairs::before {
+        position: absolute;
+        inset: 0;
+        border: 1px solid transparent;
+        border-radius: inherit;
+        box-shadow: 0 0 0 0 rgba(255, 217, 154, 0);
+        content: "";
+        transition:
+          border-color 180ms ease,
+          box-shadow 180ms ease,
+          background 180ms ease;
+      }
+
+      .second-floor-stairs:hover::before,
+      .second-floor-stairs:focus-visible::before {
+        border-color: rgba(255, 220, 159, 0.42);
+        background: radial-gradient(ellipse at 55% 58%, rgba(255, 208, 122, 0.08), transparent 64%);
+        box-shadow: 0 0 18px rgba(255, 196, 102, 0.14);
+      }
+
+      .transition-shell {
+        position: absolute;
+        inset: 0;
+        z-index: 8;
+        display: grid;
+        place-items: center;
+        background: rgba(4, 7, 13, 0.22);
+        pointer-events: auto;
+      }
+
+      .transition-frame {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: min(100vw, calc(100vh * 1672 / 941));
+        height: min(100vh, calc(100vw * 941 / 1672));
+        transform: translate(-50%, -50%);
+      }
+
+      .transition-video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        background: #050913;
+      }
+
+      .transition-hint {
+        position: absolute;
+        bottom: 24px;
+        left: 50%;
+        z-index: 1;
+        display: flex;
+        min-width: min(420px, calc(100vw - 48px));
+        flex-direction: column;
+        gap: 10px;
+        padding: 14px 18px;
+        border: 1px solid rgba(255, 231, 177, 0.18);
+        border-radius: 10px;
+        background: rgba(7, 10, 18, 0.48);
+        color: rgba(255, 247, 220, 0.88);
+        backdrop-filter: blur(12px);
+        transform: translateX(-50%);
+      }
+
+      .transition-hint strong {
+        font-size: 12px;
+        font-weight: 850;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .transition-hint p {
+        margin: 0;
+        font-size: 13px;
+        line-height: 1.55;
+      }
+
+      .transition-meter {
+        position: relative;
+        height: 4px;
+        overflow: hidden;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.08);
+      }
+
+      .transition-meter::before {
+        position: absolute;
+        inset: 0;
+        width: calc(var(--transition-progress, 0) * 100%);
+        background: linear-gradient(90deg, rgba(255, 174, 85, 0.88), rgba(255, 241, 172, 0.94));
+        box-shadow: 0 0 16px rgba(255, 198, 96, 0.28);
+        content: "";
+      }
+
       .lighthouse-bar {
         position: absolute;
         top: 24px;
         right: 24px;
         left: 24px;
-        z-index: 3;
+        z-index: 12;
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -282,21 +396,8 @@ const title = "Lighthouse";
         outline: none;
       }
 
-      .lighthouse-caption {
-        position: absolute;
-        right: 24px;
-        bottom: 24px;
-        z-index: 3;
-        max-width: min(420px, calc(100vw - 48px));
-        color: rgba(255, 244, 216, 0.72);
-        font-size: 13px;
-        font-weight: 650;
-        line-height: 1.6;
-        text-align: right;
-        text-shadow: 0 2px 18px rgba(0, 0, 0, 0.62);
-      }
-
-      .lighthouse-dialog {
+      .lighthouse-dialog,
+      .lighthouse-choice {
         position: fixed;
         right: 24px;
         bottom: 24px;
@@ -307,22 +408,26 @@ const title = "Lighthouse";
         pointer-events: none;
       }
 
-      .lighthouse-dialog[hidden] {
-        display: none;
-      }
-
-      .lighthouse-dialog-panel {
+      .lighthouse-dialog-panel,
+      .lighthouse-choice-panel {
         position: relative;
         width: min(560px, 100%);
-        padding: 18px 48px 18px 20px;
         border: 1px solid rgba(255, 231, 177, 0.22);
-        border-radius: 8px;
+        border-radius: 10px;
         background:
           linear-gradient(180deg, rgba(20, 18, 15, 0.96), rgba(8, 7, 12, 0.98));
         box-shadow:
           0 20px 70px rgba(0, 0, 0, 0.42),
           inset 0 1px 0 rgba(255, 255, 255, 0.06);
         pointer-events: auto;
+      }
+
+      .lighthouse-dialog-panel {
+        padding: 18px 48px 18px 20px;
+      }
+
+      .lighthouse-choice-panel {
+        padding: 22px 22px 18px;
       }
 
       .lighthouse-dialog-line {
@@ -334,6 +439,57 @@ const title = "Lighthouse";
         line-height: 1.65;
       }
 
+      .lighthouse-choice-title {
+        margin: 0 0 10px;
+        color: rgba(255, 247, 220, 0.92);
+        font-size: 20px;
+        font-weight: 800;
+      }
+
+      .lighthouse-choice-copy {
+        margin: 0;
+        color: rgba(255, 244, 216, 0.76);
+        font-size: 14px;
+        line-height: 1.6;
+      }
+
+      .lighthouse-choice-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 18px;
+      }
+
+      .lighthouse-choice-confirm,
+      .lighthouse-choice-cancel,
+      .lighthouse-dialog-close {
+        border-radius: 999px;
+        cursor: pointer;
+      }
+
+      .lighthouse-choice-confirm,
+      .lighthouse-choice-cancel {
+        min-height: 42px;
+        padding: 0 16px;
+        border: 1px solid rgba(255, 231, 177, 0.2);
+        background: rgba(255, 255, 255, 0.04);
+        color: rgba(255, 247, 220, 0.86);
+        font-size: 13px;
+        font-weight: 800;
+      }
+
+      .lighthouse-choice-confirm {
+        background: linear-gradient(135deg, rgba(255, 174, 85, 0.26), rgba(255, 221, 153, 0.12));
+      }
+
+      .lighthouse-choice-confirm:hover,
+      .lighthouse-choice-confirm:focus-visible,
+      .lighthouse-choice-cancel:hover,
+      .lighthouse-choice-cancel:focus-visible {
+        border-color: rgba(255, 231, 177, 0.4);
+        outline: none;
+      }
+
       .lighthouse-dialog-close {
         position: absolute;
         top: 12px;
@@ -343,10 +499,8 @@ const title = "Lighthouse";
         height: 30px;
         place-items: center;
         border: 1px solid rgba(255, 231, 177, 0.16);
-        border-radius: 50%;
         background: rgba(255, 255, 255, 0.04);
         color: rgba(255, 247, 220, 0.76);
-        cursor: pointer;
       }
 
       .lighthouse-dialog-close:hover,
@@ -390,12 +544,16 @@ const title = "Lighthouse";
           left: 16px;
         }
 
-        .lighthouse-caption {
+        .transition-hint {
           right: 16px;
           bottom: 16px;
           left: 16px;
-          max-width: none;
-          text-align: left;
+          min-width: 0;
+          transform: none;
+        }
+
+        .lighthouse-choice-actions {
+          flex-direction: column;
         }
       }
     </style>
@@ -411,8 +569,9 @@ const title = "Lighthouse";
         <p class="lighthouse-loader-note">Climbing the spiral stairs</p>
       </div>
     </div>
+
     <main class="lighthouse-space" aria-label="Inside the lighthouse">
-      <div class="scene-backdrop" aria-hidden="true">
+      <div class="scene-backdrop" data-scene-backdrop="first" aria-hidden="true">
         <img
           data-preload-src="/camp/lighthouse_1stfloor.png"
           alt=""
@@ -423,7 +582,19 @@ const title = "Lighthouse";
           draggable="false"
         />
       </div>
-      <div class="scene-frame">
+      <div class="scene-backdrop" data-scene-backdrop="second" hidden aria-hidden="true">
+        <img
+          data-preload-src="/camp/lighthouse_2ndfloor.png"
+          alt=""
+          width="1672"
+          height="941"
+          loading="eager"
+          decoding="async"
+          draggable="false"
+        />
+      </div>
+
+      <div class="scene-frame" data-scene-frame="first">
         <img
           class="lighthouse-scene"
           data-preload-src="/camp/lighthouse_1stfloor.png"
@@ -445,29 +616,131 @@ const title = "Lighthouse";
           <img data-preload-src="/camp/cat_near.gif" alt="" width="568" height="586" loading="eager" decoding="async" draggable="false" />
         </button>
       </div>
+
+      <div class="scene-frame" data-scene-frame="second" hidden>
+        <img
+          class="lighthouse-scene"
+          data-preload-src="/camp/lighthouse_2ndfloor.png"
+          alt=""
+          width="1672"
+          height="941"
+          loading="eager"
+          decoding="async"
+          draggable="false"
+        />
+        <button
+          class="lighthouse-item second-floor-stairs"
+          type="button"
+          data-lighthouse-item="stairs"
+          data-lighthouse-label="Spiral stairs"
+          aria-label="Go downstairs"
+        ></button>
+      </div>
+
+      <div class="transition-shell" data-transition-shell hidden>
+        <div class="transition-frame">
+          <video
+            class="transition-video"
+            data-transition-video
+            preload="auto"
+            muted
+            playsinline
+            aria-label="Lighthouse floor transition"
+          >
+            <source src="/camp/from1st_to_2nd_silent.mp4" type="video/mp4" />
+          </video>
+        </div>
+        <div class="transition-hint">
+          <strong data-transition-title>Climbing</strong>
+          <p data-transition-copy>Scroll up to climb the spiral stairs. Scroll down to ease back toward the floor below.</p>
+          <div class="transition-meter" data-transition-meter></div>
+        </div>
+      </div>
+
       <div class="lighthouse-bar">
         <h1 class="lighthouse-title">{title}</h1>
         <a class="return-link" href="/">Return Outside</a>
       </div>
     </main>
+
     <div class="lighthouse-dialog" data-lighthouse-dialog hidden role="status" aria-live="polite">
       <div class="lighthouse-dialog-panel">
         <button class="lighthouse-dialog-close" type="button" data-lighthouse-dialog-close aria-label="Close dialogue">×</button>
         <p class="lighthouse-dialog-line" data-lighthouse-dialog-line></p>
       </div>
     </div>
+
+    <div class="lighthouse-choice" data-lighthouse-choice hidden aria-live="polite">
+      <div class="lighthouse-choice-panel">
+        <h2 class="lighthouse-choice-title" data-lighthouse-choice-title>Go Upstairs?</h2>
+        <p class="lighthouse-choice-copy" data-lighthouse-choice-copy>The spiral stair is right there.</p>
+        <div class="lighthouse-choice-actions">
+          <button class="lighthouse-choice-confirm" type="button" data-lighthouse-choice-confirm>Go Upstairs</button>
+          <button class="lighthouse-choice-cancel" type="button" data-lighthouse-choice-cancel>Stay Here</button>
+        </div>
+      </div>
+    </div>
+
     <script>
       const loader = document.querySelector(".lighthouse-loader");
       const loaderPercent = document.querySelector("[data-loader-percent]");
       const preloadImages = Array.from(document.querySelectorAll("[data-preload-src]"));
       const lighthouseItems = Array.from(document.querySelectorAll("[data-lighthouse-item]"));
+      const sceneFrames = {
+        first: document.querySelector("[data-scene-frame='first']"),
+        second: document.querySelector("[data-scene-frame='second']"),
+      };
+      const sceneBackdrops = {
+        first: document.querySelector("[data-scene-backdrop='first']"),
+        second: document.querySelector("[data-scene-backdrop='second']"),
+      };
+      const transitionShell = document.querySelector("[data-transition-shell]");
+      const transitionVideo = document.querySelector("[data-transition-video]");
+      const transitionTitle = document.querySelector("[data-transition-title]");
+      const transitionCopy = document.querySelector("[data-transition-copy]");
+      const transitionMeter = document.querySelector("[data-transition-meter]");
       const lighthouseDialog = document.querySelector("[data-lighthouse-dialog]");
       const lighthouseDialogClose = document.querySelector("[data-lighthouse-dialog-close]");
       const lighthouseDialogLine = document.querySelector("[data-lighthouse-dialog-line]");
-      const lighthouseCat = document.querySelector("[data-lighthouse-item='cat']");
-      const LIGHTHOUSE_CAT_RESPAWN_MS = 60 * 1000;
+      const lighthouseChoice = document.querySelector("[data-lighthouse-choice]");
+      const lighthouseChoiceTitle = document.querySelector("[data-lighthouse-choice-title]");
+      const lighthouseChoiceCopy = document.querySelector("[data-lighthouse-choice-copy]");
+      const lighthouseChoiceConfirm = document.querySelector("[data-lighthouse-choice-confirm]");
+      const lighthouseChoiceCancel = document.querySelector("[data-lighthouse-choice-cancel]");
+
+      const TRANSITION_COMPLETE_EPSILON = 0.002;
+      const TRANSITION_SCROLL_FACTOR = 0.0011;
+      const TRANSITION_RETURN_UNLOCK_THRESHOLD = 0.14;
+      const LIGHTHOUSE_DIALOGUE = {
+        cat: "It's the black cat I saw in the forest. What is he doing here?",
+      };
+      const LIGHTHOUSE_CHOICES = {
+        upstairs: {
+          title: "Go Upstairs?",
+          copy: "The black cat seems to be nudging you toward the upper room.",
+          confirm: "Go Upstairs",
+          cancel: "Stay Here",
+          target: "second",
+          startProgress: 0,
+        },
+        downstairs: {
+          title: "Go Downstairs?",
+          copy: "The spiral stair curves back toward the warm light below.",
+          confirm: "Go Downstairs",
+          cancel: "Stay Here",
+          target: "first",
+          startProgress: 1,
+        },
+      };
+
       let activeLighthouseDialogueId = "";
-      let lighthouseCatRespawnTimer = 0;
+      let activeChoiceKey = "";
+      let currentFloor = "first";
+      let transitionProgress = 0;
+      let transitionReady = false;
+      let pendingTransitionProgress = null;
+      let transitionActive = false;
+      let transitionReturnUnlocked = false;
 
       const setLoaderProgress = (progress) => {
         const value = Math.max(0, Math.min(100, Math.round(progress)));
@@ -558,25 +831,143 @@ const title = "Lighthouse";
         }
       };
 
-      const closeLighthouseDialogue = () => {
-        if (activeLighthouseDialogueId === "cat" && lighthouseCat instanceof HTMLElement) {
-          lighthouseCat.classList.add("is-hidden");
-          window.clearTimeout(lighthouseCatRespawnTimer);
-          lighthouseCatRespawnTimer = window.setTimeout(() => {
-            lighthouseCat.classList.remove("is-hidden");
-            lighthouseCatRespawnTimer = 0;
-          }, LIGHTHOUSE_CAT_RESPAWN_MS);
+      const syncTransitionVideo = () => {
+        if (!transitionVideo?.duration) {
+          pendingTransitionProgress = transitionProgress;
+          return;
         }
 
+        const safeProgress = Math.max(0, Math.min(1, transitionProgress));
+        const nextTime = safeProgress * transitionVideo.duration;
+
+        if (Math.abs((transitionVideo.currentTime || 0) - nextTime) > 0.016) {
+          transitionVideo.currentTime = nextTime;
+        }
+      };
+
+      const setTransitionProgress = (nextProgress) => {
+        transitionProgress = Math.max(0, Math.min(1, nextProgress));
+
+        if (!transitionReturnUnlocked) {
+          if (activeChoiceKey === "upstairs" && transitionProgress >= TRANSITION_RETURN_UNLOCK_THRESHOLD) {
+            transitionReturnUnlocked = true;
+          }
+
+          if (activeChoiceKey === "downstairs" && transitionProgress <= 1 - TRANSITION_RETURN_UNLOCK_THRESHOLD) {
+            transitionReturnUnlocked = true;
+          }
+        }
+
+        transitionMeter?.style.setProperty("--transition-progress", String(transitionProgress));
+        syncTransitionVideo();
+      };
+
+      const setScene = (floor) => {
+        currentFloor = floor;
+        transitionActive = floor === "transition";
+
+        const transitionBackdrop = activeChoiceKey === "downstairs" ? "second" : "first";
+        const visibleBackdrop = floor === "transition" ? transitionBackdrop : floor;
+
+        sceneFrames.first.hidden = floor !== "first";
+        sceneFrames.second.hidden = floor !== "second";
+        sceneBackdrops.first.hidden = visibleBackdrop !== "first";
+        sceneBackdrops.second.hidden = visibleBackdrop !== "second";
+        if (transitionShell) transitionShell.hidden = floor !== "transition";
+      };
+
+      const closeLighthouseChoice = () => {
+        activeChoiceKey = "";
+        if (lighthouseChoice) lighthouseChoice.hidden = true;
+      };
+
+      const openLighthouseChoice = (key) => {
+        const choice = LIGHTHOUSE_CHOICES[key];
+        if (!choice || !lighthouseChoice || !lighthouseChoiceTitle || !lighthouseChoiceCopy) return;
+
+        activeChoiceKey = key;
+        lighthouseChoiceTitle.textContent = choice.title;
+        lighthouseChoiceCopy.textContent = choice.copy;
+        if (lighthouseChoiceConfirm) lighthouseChoiceConfirm.textContent = choice.confirm;
+        if (lighthouseChoiceCancel) lighthouseChoiceCancel.textContent = choice.cancel;
+        lighthouseChoice.hidden = false;
+        lighthouseChoiceConfirm?.focus();
+      };
+
+      const closeLighthouseDialogue = (reason = "dismiss") => {
+        const shouldOfferChoice = activeLighthouseDialogueId === "cat" && (reason === "close" || reason === "escape");
         activeLighthouseDialogueId = "";
         if (lighthouseDialog) lighthouseDialog.hidden = true;
+        if (shouldOfferChoice) openLighthouseChoice("upstairs");
       };
 
       const showLighthouseDialogue = (line, id = "") => {
         if (!lighthouseDialog || !lighthouseDialogLine || !line) return;
+        closeLighthouseChoice();
         activeLighthouseDialogueId = id;
         lighthouseDialogLine.textContent = line;
         lighthouseDialog.hidden = false;
+      };
+
+      const completeTransition = (destination) => {
+        setScene(destination);
+        closeLighthouseChoice();
+        activeChoiceKey = "";
+      };
+
+      const updateTransitionCopy = () => {
+        if (!transitionTitle || !transitionCopy) return;
+
+        if (activeChoiceKey === "downstairs") {
+          transitionTitle.textContent = "Descending";
+          transitionCopy.textContent = "Scroll down to return to the lower room. Scroll up if you want to drift back toward the upper floor.";
+          return;
+        }
+
+        transitionTitle.textContent = "Climbing";
+        transitionCopy.textContent = "Scroll up to climb the spiral stairs. Scroll down to ease back toward the floor below.";
+      };
+
+      const startTransition = (choiceKey) => {
+        const choice = LIGHTHOUSE_CHOICES[choiceKey];
+        if (!choice) return;
+
+        closeLighthouseChoice();
+        if (lighthouseDialog) lighthouseDialog.hidden = true;
+        activeLighthouseDialogueId = "";
+        activeChoiceKey = choiceKey;
+        transitionReturnUnlocked = false;
+        updateTransitionCopy();
+        setScene("transition");
+        setTransitionProgress(choice.startProgress);
+      };
+
+      const handleTransitionBoundary = () => {
+        if (activeChoiceKey === "downstairs") {
+          if (transitionProgress <= TRANSITION_COMPLETE_EPSILON) {
+            completeTransition("first");
+            return true;
+          }
+
+          if (transitionReturnUnlocked && transitionProgress >= 1 - TRANSITION_COMPLETE_EPSILON) {
+            completeTransition("second");
+            return true;
+          }
+
+          return false;
+        }
+
+        if (transitionProgress >= 1 - TRANSITION_COMPLETE_EPSILON) {
+          completeTransition("second");
+          return true;
+        }
+
+        if (transitionReturnUnlocked && transitionProgress <= TRANSITION_COMPLETE_EPSILON) {
+          completeTransition("first");
+          return true;
+        }
+
+        return false;
       };
 
       lighthouseItems.forEach((item) => {
@@ -595,20 +986,70 @@ const title = "Lighthouse";
 
       window.addEventListener("lighthouse:click", (event) => {
         const id = event.detail?.id;
+
         if (id === "cat") {
-          showLighthouseDialogue("It's the black cat I saw in the forest. What is he doing here...", id);
+          showLighthouseDialogue(LIGHTHOUSE_DIALOGUE.cat, id);
+          return;
+        }
+
+        if (id === "stairs" && currentFloor === "second") {
+          closeLighthouseDialogue("dismiss");
+          openLighthouseChoice("downstairs");
         }
       });
 
-      lighthouseDialogClose?.addEventListener("click", closeLighthouseDialogue);
+      lighthouseDialogClose?.addEventListener("click", () => closeLighthouseDialogue("close"));
+      lighthouseChoiceCancel?.addEventListener("click", closeLighthouseChoice);
+      lighthouseChoiceConfirm?.addEventListener("click", () => {
+        if (!activeChoiceKey) return;
+        startTransition(activeChoiceKey);
+      });
+
+      transitionVideo?.addEventListener("loadedmetadata", () => {
+        transitionReady = true;
+        if (pendingTransitionProgress !== null) {
+          transitionProgress = pendingTransitionProgress;
+          pendingTransitionProgress = null;
+        }
+        syncTransitionVideo();
+      });
+
+      transitionVideo?.addEventListener("canplay", () => {
+        transitionReady = true;
+        syncTransitionVideo();
+      });
+
+      window.addEventListener(
+        "wheel",
+        (event) => {
+          if (!transitionActive) return;
+          event.preventDefault();
+          const delta = event.deltaY * TRANSITION_SCROLL_FACTOR;
+          setTransitionProgress(transitionProgress + delta);
+          handleTransitionBoundary();
+        },
+        { passive: false },
+      );
+
       window.addEventListener("keydown", (event) => {
         if (event.key === "Escape") {
-          closeLighthouseDialogue();
+          if (!lighthouseChoice?.hidden) {
+            closeLighthouseChoice();
+            return;
+          }
+
+          if (!lighthouseDialog?.hidden) {
+            closeLighthouseDialogue("escape");
+          }
         }
       });
 
       setLoaderProgress(0);
+      setScene("first");
+      setTransitionProgress(0);
       preloadLighthouseAssets();
+      transitionVideo?.load();
+      if (transitionReady) syncTransitionVideo();
     </script>
   </body>
 </html>
