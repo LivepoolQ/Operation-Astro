@@ -258,21 +258,8 @@ const title = "Lighthouse";
       .second-floor-stairs::before {
         position: absolute;
         inset: 0;
-        border: 1px solid transparent;
         border-radius: inherit;
-        box-shadow: 0 0 0 0 rgba(255, 217, 154, 0);
         content: "";
-        transition:
-          border-color 180ms ease,
-          box-shadow 180ms ease,
-          background 180ms ease;
-      }
-
-      .second-floor-stairs:hover::before,
-      .second-floor-stairs:focus-visible::before {
-        border-color: rgba(255, 220, 159, 0.42);
-        background: radial-gradient(ellipse at 55% 58%, rgba(255, 208, 122, 0.08), transparent 64%);
-        box-shadow: 0 0 18px rgba(255, 196, 102, 0.14);
       }
 
       .transition-shell {
@@ -370,6 +357,11 @@ const title = "Lighthouse";
         letter-spacing: 0.08em;
         text-transform: uppercase;
         text-shadow: 0 2px 18px rgba(0, 0, 0, 0.52);
+      }
+
+      .lighthouse-title span {
+        color: rgba(255, 232, 183, 0.66);
+        font-weight: 700;
       }
 
       .return-link {
@@ -642,6 +634,7 @@ const title = "Lighthouse";
           <video
             class="transition-video"
             data-transition-video
+            data-preload-video-src="/camp/from1st_to_2nd_silent.mp4"
             preload="auto"
             muted
             playsinline
@@ -658,7 +651,7 @@ const title = "Lighthouse";
       </div>
 
       <div class="lighthouse-bar">
-        <h1 class="lighthouse-title">{title}</h1>
+        <h1 class="lighthouse-title">{title} <span data-floor-label>1st floor</span></h1>
         <a class="return-link" href="/">Return Outside</a>
       </div>
     </main>
@@ -685,6 +678,7 @@ const title = "Lighthouse";
       const loader = document.querySelector(".lighthouse-loader");
       const loaderPercent = document.querySelector("[data-loader-percent]");
       const preloadImages = Array.from(document.querySelectorAll("[data-preload-src]"));
+      const preloadVideos = Array.from(document.querySelectorAll("[data-preload-video-src]"));
       const lighthouseItems = Array.from(document.querySelectorAll("[data-lighthouse-item]"));
       const sceneFrames = {
         first: document.querySelector("[data-scene-frame='first']"),
@@ -699,6 +693,7 @@ const title = "Lighthouse";
       const transitionTitle = document.querySelector("[data-transition-title]");
       const transitionCopy = document.querySelector("[data-transition-copy]");
       const transitionMeter = document.querySelector("[data-transition-meter]");
+      const floorLabel = document.querySelector("[data-floor-label]");
       const lighthouseDialog = document.querySelector("[data-lighthouse-dialog]");
       const lighthouseDialogClose = document.querySelector("[data-lighthouse-dialog-close]");
       const lighthouseDialogLine = document.querySelector("[data-lighthouse-dialog-line]");
@@ -717,7 +712,7 @@ const title = "Lighthouse";
       const LIGHTHOUSE_CHOICES = {
         upstairs: {
           title: "Go Upstairs?",
-          copy: "The black cat seems to be nudging you toward the upper room.",
+          copy: "The black cat seems to be leading you toward the upper room.",
           confirm: "Go Upstairs",
           cancel: "Stay Here",
           target: "second",
@@ -725,7 +720,7 @@ const title = "Lighthouse";
         },
         downstairs: {
           title: "Go Downstairs?",
-          copy: "The spiral stair curves back toward the warm light below.",
+          copy: "The spiral stair curves down toward first floor.",
           confirm: "Go Downstairs",
           cancel: "Stay Here",
           target: "first",
@@ -760,10 +755,26 @@ const title = "Lighthouse";
         await element.decode?.().catch(() => {});
       };
 
-      const preloadAsset = async ({ element, response, total }, onProgress) => {
+      const applyBlobToVideo = async (element, blob) => {
+        element.src = URL.createObjectURL(blob);
+
+        await new Promise((resolve) => {
+          const done = () => {
+            element.removeEventListener("loadeddata", done);
+            element.removeEventListener("error", done);
+            resolve();
+          };
+
+          element.addEventListener("loadeddata", done, { once: true });
+          element.addEventListener("error", done, { once: true });
+          element.load();
+        });
+      };
+
+      const preloadAsset = async ({ element, response, total, apply }, onProgress) => {
         if (!response.body || !total) {
           const blob = await response.blob();
-          await applyBlobToImage(element, blob);
+          await apply(element, blob);
           onProgress(total || blob.size || 1, total || blob.size || 1);
           return;
         }
@@ -783,27 +794,40 @@ const title = "Lighthouse";
         const blob = new Blob(chunks, {
           type: response.headers.get("content-type") || "application/octet-stream",
         });
-        await applyBlobToImage(element, blob);
+        await apply(element, blob);
       };
 
       const preloadLighthouseAssets = async () => {
-        if (!preloadImages.length) {
+        const preloadTargets = [
+          ...preloadImages.map((element) => ({
+            element,
+            url: element.dataset.preloadSrc,
+            apply: applyBlobToImage,
+          })),
+          ...preloadVideos.map((element) => ({
+            element,
+            url: element.dataset.preloadVideoSrc,
+            apply: applyBlobToVideo,
+          })),
+        ].filter((target) => target.url);
+
+        if (!preloadTargets.length) {
           finishLoader();
           return;
         }
 
         const loadedBytes = new Map();
-        const fallbackStep = 100 / preloadImages.length;
+        const fallbackStep = 100 / preloadTargets.length;
 
         try {
           const assets = await Promise.all(
-            preloadImages.map(async (element) => {
-              const url = element.dataset.preloadSrc;
+            preloadTargets.map(async ({ element, url, apply }) => {
               const response = await fetch(url, { cache: "force-cache" });
               if (!response.ok) throw new Error(`Could not load ${url}`);
               return {
                 element,
                 response,
+                apply,
                 total: Number(response.headers.get("content-length")) || 0,
               };
             }),
@@ -825,6 +849,12 @@ const title = "Lighthouse";
           preloadImages.forEach((element) => {
             if (element.dataset.preloadSrc && !element.getAttribute("src")) {
               element.src = element.dataset.preloadSrc;
+            }
+          });
+          preloadVideos.forEach((element) => {
+            if (element.dataset.preloadVideoSrc && !element.getAttribute("src")) {
+              element.src = element.dataset.preloadVideoSrc;
+              element.load();
             }
           });
           finishLoader();
@@ -874,6 +904,16 @@ const title = "Lighthouse";
         sceneBackdrops.first.hidden = visibleBackdrop !== "first";
         sceneBackdrops.second.hidden = visibleBackdrop !== "second";
         if (transitionShell) transitionShell.hidden = floor !== "transition";
+
+        if (floorLabel) {
+          if (floor === "second") {
+            floorLabel.textContent = "2nd floor";
+          } else if (floor === "transition") {
+            floorLabel.textContent = activeChoiceKey === "downstairs" ? "2nd floor" : "1st floor";
+          } else {
+            floorLabel.textContent = "1st floor";
+          }
+        }
       };
 
       const closeLighthouseChoice = () => {
