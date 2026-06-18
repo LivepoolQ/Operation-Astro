@@ -1064,7 +1064,7 @@ const title = "Lighthouse";
         (event) => {
           if (!transitionActive) return;
           event.preventDefault();
-          const delta = event.deltaY * TRANSITION_SCROLL_FACTOR;
+          const delta = event.deltaY * -TRANSITION_SCROLL_FACTOR;
           setTransitionProgress(transitionProgress + delta);
           handleTransitionBoundary();
         },
